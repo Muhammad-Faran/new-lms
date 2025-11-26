@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black text-slate-100">
         <TransitionRoot as="template" :show="sidebarOpen">
             <Dialog class="relative z-[100] lg:hidden" @close="sidebarOpen = false">
                 <TransitionChild as="template" enter="transition-opacity ease-linear duration-300"
@@ -26,94 +26,105 @@
                             </TransitionChild>
                             <!-- Sidebar component, swap this element with another sidebar if you like -->
                             <div
-                                class="flex grow flex-col gap-y-5 overflow-y-auto bg-[#75ba2c] px-6 pb-4 ring-1 ring-white/10">
-                                <div
-                                    class="-mx-6 flex h-16 shrink-0 items-center bg-white border-b-2 border-b-gray-200">
+                                class="flex grow flex-col gap-y-5 overflow-y-auto bg-gradient-to-b from-slate-950 via-slate-900 to-black px-6 pb-6 ring-1 ring-white/10">
+                                <!-- <div
+                                    class="-mx-6 flex h-16 shrink-0 items-center bg-slate-900 border-b border-slate-800/80">
                                     <img class="ml-10 h-24 w-auto" src="/finova_logo.png" alt="Your Company" />
-                                </div>
-                                <nav class="flex flex-1 flex-col">
-                                    <ul role="list" class="flex flex-1 flex-col gap-y-7">
-                                        <li>
-                                            <ul role="list" class="flex flex-1 flex-col gap-y-7">
-                                                <li>
-                                                    <ul role="list" class="-mx-2 space-y-1">
-                                                        <li v-for="item in filteredNavigation" :key="item.name">
-                                                            <!-- Top-level link -->
-                                                            <div @click="handleParentClick(item)"
-                                                                class="group flex justify-between rounded-md p-2 text-sm/6 font-semibold cursor-pointer"
-                                                                :class="[route.path === item.href ? 'bg-[#25bd50] text-white' : 'text-white hover:bg-[#25bd50] hover:text-white']">
-                                                                <div class="flex gap-x-3">
-                                                                    <component :is="item.icon" class="size-6 shrink-0"
-                                                                        aria-hidden="true" />
-                                                                    {{ item.name }}
-                                                                </div>
+                                </div> -->
+                                <nav class="flex flex-1 flex-col mt-5">
+                                    <div
+                                        class="px-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500/80">
+                                        Menu</div>
+                                    <ul role="list" class="mt-1.5 flex flex-col gap-y-2.5">
+                                        <li v-for="item in filteredNavigation" :key="item.name">
+                                            <div @click="handleParentClick(item)"
+                                                class="group relative overflow-hidden rounded-xl border border-slate-800/70 bg-slate-900/60 p-2 text-[13px] font-semibold cursor-pointer shadow-sm shadow-black/30 transition-all duration-200"
+                                                :class="[route.path === item.href ? 'border-emerald-500/60 bg-emerald-600/10 shadow-emerald-500/20 ring-1 ring-emerald-500/30' : 'hover:border-emerald-500/40 hover:shadow-emerald-500/10 hover:bg-slate-800/60']">
+                                                <span
+                                                    class="absolute inset-y-1 left-0 w-[2.5px] rounded-full transition-colors duration-200"
+                                                    :class="[route.path === item.href ? 'bg-emerald-400' : 'bg-slate-800 group-hover:bg-emerald-400/80']"></span>
+                                                <div class="flex items-center justify-between gap-3">
+                                                    <div class="flex items-center gap-2.5">
+                                                        <div
+                                                            class="flex size-8 items-center justify-center rounded-lg bg-slate-800/80 text-emerald-300 ring-1 ring-slate-700 transition-colors duration-200 group-hover:ring-emerald-500/50">
+                                                            <component :is="item.icon" class="size-4 shrink-0"
+                                                                aria-hidden="true" />
+                                                        </div>
+                                                        <div class="leading-tight text-white">
+                                                            <p class="text-[13px] font-semibold">{{ item.name }}</p>
+                                                            <p class="text-[10px] text-slate-500">Quick access</p>
+                                                        </div>
+                                                    </div>
 
-                                                                <!-- Arrow Icons for Expandable Items -->
-                                                                <div v-if="item.isExpandable" class="shrink-0">
-                                                                    <ChevronDownIcon v-if="item.expanded" class="size-5"
-                                                                        aria-hidden="true" />
-                                                                    <ChevronRightIcon v-else class="size-5"
-                                                                        aria-hidden="true" />
-                                                                </div>
-                                                            </div>
+                                                    <!-- Arrow Icons for Expandable Items -->
+                                                    <div v-if="item.isExpandable"
+                                                        class="shrink-0 text-slate-500 group-hover:text-emerald-300 transition-colors duration-150">
+                                                        <ChevronDownIcon v-if="item.expanded" class="size-4"
+                                                            aria-hidden="true" />
+                                                        <ChevronRightIcon v-else class="size-4" aria-hidden="true" />
+                                                    </div>
+                                                    <div v-else
+                                                        class="size-2 rounded-full bg-emerald-400/60 shadow shadow-emerald-500/30">
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                                            <!-- Child Links -->
-                                                            <ul v-if="item.isExpandable && item.expanded" role="list"
-                                                                class="-mx-2 space-y-1 ml-4">
-                                                                <li v-for="child in item.children" :key="child.name">
-                                                                    <router-link :to="child.href"
-                                                                        @click="sidebarOpen = false"
-                                                                        class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold"
-                                                                        :class="[route.path === child.href ? 'bg-[#25bd50] text-white' : 'text-white hover:bg-[#25bd50] hover:text-white']">
-                                                                        <component :is="child.icon"
-                                                                            class="size-6 shrink-0"
-                                                                            aria-hidden="true" />
-                                                                        {{ child.name }}
-                                                                    </router-link>
-                                                                </li>
-                                                            </ul>
-                                                        </li>
-                                                    </ul>
-
+                                            <!-- Child Links -->
+                                            <ul v-if="item.isExpandable && item.expanded" role="list"
+                                                class="ml-3 mt-1.5 space-y-1.5 border-l border-slate-800/70 pl-2.5">
+                                                <li v-for="child in item.children" :key="child.name">
+                                                    <router-link :to="child.href" @click="sidebarOpen = false"
+                                                        class="group flex items-center gap-x-3 rounded-lg border border-slate-800/70 bg-slate-900/40 p-1.5 text-[13px] font-semibold transition-all duration-150"
+                                                        :class="[route.path === child.href ? 'border-emerald-500/50 bg-emerald-600/15 text-white shadow-sm shadow-emerald-500/20' : 'text-slate-300 hover:border-emerald-500/40 hover:text-white hover:bg-slate-800/60']">
+                                                        <component :is="child.icon"
+                                                            class="size-4 shrink-0 text-emerald-300"
+                                                            aria-hidden="true" />
+                                                        <span class="flex-1">{{ child.name }}</span>
+                                                        <span v-if="route.path === child.href"
+                                                            class="size-1.5 rounded-full bg-emerald-400 shadow shadow-emerald-500/40"></span>
+                                                    </router-link>
                                                 </li>
-                                                <!-- <li>
-                            <div class="text-xs/6 font-semibold text-gray-400">Your teams</div>
-                            <ul role="list" class="-mx-2 mt-2 space-y-1">
-                                <li v-for="team in teams" :key="team.name">
-                                    <a :href="team.href"
-                                        :class="[team.current ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white', 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold']">
-                                        <span
-                                            class="flex size-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white">{{
-                                                team.initial }}</span>
-                                        <span class="truncate">{{ team.name }}</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li> -->
                                             </ul>
                                         </li>
-                                        <!-- <li>
-                                            <div class="text-xs/6 font-semibold text-gray-400">Your teams</div>
-                                            <ul role="list" class="-mx-2 mt-2 space-y-1">
-                                                <li v-for="team in teams" :key="team.name">
-                                                    <a :href="team.href"
-                                                        :class="[team.current ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white', 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold']">
-                                                        <span
-                                                            class="flex size-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white">{{
-                                                                team.initial }}</span>
-                                                        <span class="truncate">{{ team.name }}</span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </li> -->
-                                        <!-- <li class="mt-auto">
-                                            <a href="#"
-                                                class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-white hover:bg-[#25bd50] hover:text-white">
-                                                <Cog6ToothIcon class="size-6 shrink-0" aria-hidden="true" />
-                                                Settings
-                                            </a>
-                                        </li> -->
                                     </ul>
+                                    <Menu as="div" class="relative mt-auto pt-5">
+                                        <MenuButton
+                                            class="group flex w-full items-center gap-3 rounded-xl border border-slate-800/70 bg-slate-900/50 p-2.5 text-left shadow-sm shadow-black/30 transition-colors duration-150 hover:border-emerald-500/50 hover:bg-slate-800/60">
+                                            <div
+                                                class="flex size-9 items-center justify-center rounded-full bg-emerald-600 text-white font-semibold uppercase shadow-sm shadow-emerald-500/30">
+                                                <span v-if="loginUser.first_name">{{ userInitials }}</span>
+                                                <span v-else>NA</span>
+                                            </div>
+                                            <div class="flex-1 leading-tight">
+                                                <p class="text-[13px] font-semibold text-white truncate">{{
+                                                    loginUser.first_name }} {{ loginUser.last_name }}</p>
+                                                <p class="text-[11px] text-slate-500">Open user menu</p>
+                                            </div>
+                                            <ChevronDownIcon class="size-4 text-slate-500 group-hover:text-emerald-300"
+                                                aria-hidden="true" />
+                                        </MenuButton>
+                                        <transition enter-active-class="transition ease-out duration-100"
+                                            enter-from-class="transform opacity-0 scale-95"
+                                            enter-to-class="transform opacity-100 scale-100"
+                                            leave-active-class="transition ease-in duration-75"
+                                            leave-from-class="transform opacity-100 scale-100"
+                                            leave-to-class="transform opacity-0 scale-95">
+                                            <MenuItems
+                                                class="absolute inset-x-0 bottom-20 z-20 mx-4 rounded-xl bg-slate-900 py-2 shadow-xl shadow-black/40 ring-1 ring-slate-800 focus:outline-none">
+                                                <MenuItem v-for="item in userNavigation" :key="item.name"
+                                                    v-slot="{ active }">
+                                                <router-link v-if="item.href && !item.action" :to="item.href"
+                                                    :class="[active ? 'bg-slate-800 text-white outline-none' : 'text-slate-200', 'block px-3 py-2 text-sm/6 whitespace-nowrap rounded-lg transition-colors duration-150']">
+                                                    {{ item.name }}
+                                                </router-link>
+                                                <a v-else href="#" @click.prevent="item.action ? item.action() : null"
+                                                    :class="[active ? 'bg-slate-800 text-white outline-none' : 'text-slate-200', 'block px-3 py-2 text-sm/6 whitespace-nowrap rounded-lg transition-colors duration-150']">
+                                                    {{ item.name }}
+                                                </a>
+                                                </MenuItem>
+                                            </MenuItems>
+                                        </transition>
+                                    </Menu>
                                 </nav>
                             </div>
                         </DialogPanel>
@@ -125,151 +136,134 @@
         <!-- Static sidebar for desktop -->
         <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
             <!-- Sidebar component, swap this element with another sidebar if you like -->
-            <div class="flex grow flex-col gap-y-5 overflow-y-auto  bg-[#75ba2c] px-6 pb-4">
-                <div class="-mx-6 flex h-16 shrink-0 items-center bg-white border-b-2 border-b-gray-200">
+            <div
+                class="flex grow flex-col gap-y-5 overflow-y-auto bg-gradient-to-b from-slate-950 via-slate-900 to-black px-6 pb-6">
+                <!-- <div class="-mx-6 flex h-16 shrink-0 items-center bg-slate-900 border-b border-slate-800/80">
                     <img class="ml-10 h-24 w-auto" src="/finova_logo.png" alt="Your Company" />
-                </div>
-                <nav class="flex flex-1 flex-col">
-                    <ul role="list" class="flex flex-1 flex-col gap-y-7">
-                        <li>
-                            <ul role="list" class="-mx-2 space-y-1">
-                                <li v-for="item in filteredNavigation" :key="item.name">
-                                    <!-- Top-level link -->
-                                    <div @click="handleParentClick(item)"
-                                        class="group flex justify-between rounded-md p-2 text-sm/6 font-semibold cursor-pointer"
-                                        :class="[route.path === item.href ? 'bg-[#25bd50] text-white' : 'text-white hover:bg-[#25bd50] hover:text-white']">
-                                        <div class="flex gap-x-3">
-                                            <component :is="item.icon" class="size-6 shrink-0" aria-hidden="true" />
-                                            {{ item.name }}
+                </div> -->
+                <nav class="flex flex-1 flex-col mt-5">
+                    <div class="px-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500/80">Menu</div>
+                    <ul role="list" class="mt-1.5 flex flex-1 flex-col gap-y-2.5">
+                        <li v-for="item in filteredNavigation" :key="item.name">
+                            <div @click="handleParentClick(item)"
+                                class="group relative overflow-hidden rounded-xl border border-slate-800/70 bg-slate-900/60 p-2 text-[13px] font-semibold cursor-pointer shadow-sm shadow-black/30 transition-all duration-200"
+                                :class="[route.path === item.href ? 'border-emerald-500/60 bg-emerald-600/10 shadow-emerald-500/20 ring-1 ring-emerald-500/30' : 'hover:border-emerald-500/40 hover:shadow-emerald-500/10 hover:bg-slate-800/60']">
+                                <span
+                                    class="absolute inset-y-1 left-0 w-[2.5px] rounded-full transition-colors duration-200"
+                                    :class="[route.path === item.href ? 'bg-emerald-400' : 'bg-slate-800 group-hover:bg-emerald-400/80']"></span>
+                                <div class="flex items-center justify-between gap-3">
+                                    <div class="flex items-center gap-2.5">
+                                        <div
+                                            class="flex size-8 items-center justify-center rounded-lg bg-slate-800/80 text-emerald-300 ring-1 ring-slate-700 transition-colors duration-200 group-hover:ring-emerald-500/50">
+                                            <component :is="item.icon" class="size-4 shrink-0" aria-hidden="true" />
                                         </div>
-
-                                        <!-- Arrow Icons for Expandable Items -->
-                                        <div v-if="item.isExpandable" class="shrink-0">
-                                            <ChevronDownIcon v-if="item.expanded" class="size-5" aria-hidden="true" />
-                                            <ChevronRightIcon v-else class="size-5" aria-hidden="true" />
+                                        <div class="leading-tight">
+                                            <p class="text-[13px] font-semibold">{{ item.name }}</p>
+                                            <p class="text-[10px] text-slate-500">Quick access</p>
                                         </div>
                                     </div>
 
-                                    <!-- Child Links -->
-                                    <ul v-if="item.isExpandable && item.expanded" role="list"
-                                        class="-mx-2 space-y-1 ml-4">
-                                        <li v-for="child in item.children" :key="child.name">
-                                            <router-link :to="child.href"
-                                                class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold"
-                                                :class="[route.path === child.href ? 'bg-[#25bd50] text-white' : 'text-white hover:bg-[#25bd50] hover:text-white']">
-                                                <component :is="child.icon" class="size-6 shrink-0"
-                                                    aria-hidden="true" />
-                                                {{ child.name }}
-                                            </router-link>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
+                                    <!-- Arrow Icons for Expandable Items -->
+                                    <div v-if="item.isExpandable"
+                                        class="shrink-0 text-slate-500 group-hover:text-emerald-300 transition-colors duration-150">
+                                        <ChevronDownIcon v-if="item.expanded" class="size-4" aria-hidden="true" />
+                                        <ChevronRightIcon v-else class="size-4" aria-hidden="true" />
+                                    </div>
+                                    <div v-else
+                                        class="size-2 rounded-full bg-emerald-400/60 shadow shadow-emerald-500/30">
+                                    </div>
+                                </div>
+                            </div>
 
-                        </li>
-                        <!-- <li>
-                            <div class="text-xs/6 font-semibold text-gray-400">Your teams</div>
-                            <ul role="list" class="-mx-2 mt-2 space-y-1">
-                                <li v-for="team in teams" :key="team.name">
-                                    <a :href="team.href"
-                                        :class="[team.current ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white', 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold']">
-                                        <span
-                                            class="flex size-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white">{{
-                                                team.initial }}</span>
-                                        <span class="truncate">{{ team.name }}</span>
-                                    </a>
+                            <!-- Child Links -->
+                            <ul v-if="item.isExpandable && item.expanded" role="list"
+                                class="ml-3 mt-1.5 space-y-1.5 border-l border-slate-800/70 pl-2.5">
+                                <li v-for="child in item.children" :key="child.name">
+                                    <router-link :to="child.href"
+                                        class="group flex items-center gap-x-3 rounded-lg border border-slate-800/70 bg-slate-900/40 p-1.5 text-[13px] font-semibold transition-all duration-150"
+                                        :class="[route.path === child.href ? 'border-emerald-500/50 bg-emerald-600/15 text-white shadow-sm shadow-emerald-500/20' : 'text-slate-300 hover:border-emerald-500/40 hover:text-white hover:bg-slate-800/60']">
+                                        <component :is="child.icon" class="size-4 shrink-0 text-emerald-300"
+                                            aria-hidden="true" />
+                                        <span class="flex-1">{{ child.name }}</span>
+                                        <span v-if="route.path === child.href"
+                                            class="size-1.5 rounded-full bg-emerald-400 shadow shadow-emerald-500/40"></span>
+                                    </router-link>
                                 </li>
                             </ul>
-                        </li> -->
-                        <!-- <li class="mt-auto">
-                            <a href="#"
-                                class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-white hover:bg-gray-800 hover:text-white">
-                                <Cog6ToothIcon class="size-6 shrink-0" aria-hidden="true" />
-                                Settings
-                            </a>
-                        </li> -->
+                        </li>
                     </ul>
+                    <Menu as="div" class="relative mt-auto pt-5">
+                        <MenuButton
+                            class="group flex w-full items-center gap-3 rounded-xl border border-slate-800/70 bg-slate-900/50 p-2.5 text-left shadow-sm shadow-black/30 transition-colors duration-150 hover:border-emerald-500/50 hover:bg-slate-800/60">
+                            <div
+                                class="flex size-9 items-center justify-center rounded-full bg-emerald-600 text-white font-semibold uppercase shadow-sm shadow-emerald-500/30">
+                                <span v-if="loginUser.first_name">{{ userInitials }}</span>
+                                <span v-else>NA</span>
+                            </div>
+                            <div class="flex-1 leading-tight">
+                                <p class="text-[13px] font-semibold text-white truncate">{{ loginUser.first_name }} {{
+                                    loginUser.last_name }}</p>
+                                <p class="text-[11px] text-slate-500">Open user menu</p>
+                            </div>
+                            <ChevronDownIcon class="size-4 text-slate-500 group-hover:text-emerald-300"
+                                aria-hidden="true" />
+                        </MenuButton>
+                        <transition enter-active-class="transition ease-out duration-100"
+                            enter-from-class="transform opacity-0 scale-95"
+                            enter-to-class="transform opacity-100 scale-100"
+                            leave-active-class="transition ease-in duration-75"
+                            leave-from-class="transform opacity-100 scale-100"
+                            leave-to-class="transform opacity-0 scale-95">
+                            <MenuItems
+                                class="absolute inset-x-0 bottom-20 z-20 mx-4 rounded-xl bg-slate-900 py-2 shadow-xl shadow-black/40 ring-1 ring-slate-800 focus:outline-none">
+                                <MenuItem v-for="item in userNavigation" :key="item.name" v-slot="{ active }">
+                                <router-link v-if="item.href && !item.action" :to="item.href"
+                                    :class="[active ? 'bg-slate-800 text-white outline-none' : 'text-slate-200', 'block px-3 py-2 text-sm/6 whitespace-nowrap rounded-lg transition-colors duration-150']">
+                                    {{ item.name }}
+                                </router-link>
+                                <a v-else href="#" @click.prevent="item.action ? item.action() : null"
+                                    :class="[active ? 'bg-slate-800 text-white outline-none' : 'text-slate-200', 'block px-3 py-2 text-sm/6 whitespace-nowrap rounded-lg transition-colors duration-150']">
+                                    {{ item.name }}
+                                </a>
+                                </MenuItem>
+                            </MenuItems>
+                        </transition>
+                    </Menu>
                 </nav>
             </div>
         </div>
 
         <div class="lg:pl-72">
             <div
-                class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
-                <button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden" @click="sidebarOpen = true">
+                class="sticky top-0 z-40 flex h-12 shrink-0 items-center gap-x-4 border-b border-slate-800/80 bg-slate-900/80 backdrop-blur px-4 shadow-md shadow-black/40 sm:gap-x-6 sm:px-6 lg:px-8">
+                <button type="button" class="-m-2.5 p-2 text-slate-300 hover:text-white lg:hidden"
+                    @click="sidebarOpen = true">
                     <span class="sr-only">Open sidebar</span>
-                    <Bars3Icon class="size-6" aria-hidden="true" />
+                    <Bars3Icon class="size-5" aria-hidden="true" />
                 </button>
 
                 <!-- Separator -->
-                <div class="h-6 w-px bg-gray-900/10 lg:hidden" aria-hidden="true" />
+                <div class="h-6 w-px bg-slate-700 lg:hidden" aria-hidden="true" />
 
                 <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-                    <form class="relative flex flex-1" action="#" method="GET">
-                        <label for="search-field" class="sr-only">Search</label>
-                        <MagnifyingGlassIcon
-                            class="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400"
-                            aria-hidden="true" />
-                        <input id="search-field"
-                            class="block size-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
-                            placeholder="Search..." type="search" name="search" />
-                    </form>
-                    <div class="flex items-center gap-x-4 lg:gap-x-6">
-                        <button type="button" class="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
+                    <div class="flex flex-1 items-center justify-end gap-x-4 lg:gap-x-6">
+                        <button type="button"
+                            class="-m-2.5 p-2 text-slate-400 hover:text-white transition-colors duration-150">
                             <span class="sr-only">View notifications</span>
-                            <BellIcon class="size-6" aria-hidden="true" />
+                            <BellIcon class="size-5" aria-hidden="true" />
                         </button>
-
-                        <!-- Separator -->
-                        <div class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" aria-hidden="true" />
-
-                        <!-- Profile dropdown -->
-                        <Menu as="div" class="relative">
-                            <MenuButton class="-m-1.5 flex items-center p-1.5">
-                                <span class="sr-only">Open user menu</span>
-                                <!-- Profile placeholder instead of image -->
-                                <div
-                                    class="size-8 rounded-full bg-[#75ba2c] text-white flex items-center justify-center font-semibold uppercase">
-                                    <span v-if="loginUser.first_name">{{ userInitials }}</span>
-                                </div>
-                                <span class="hidden lg:flex lg:items-center">
-                                    <span class="ml-4 text-sm/6 font-semibold text-gray-900" aria-hidden="true">
-                                        {{ loginUser.first_name }} {{ loginUser.last_name }}
-                                    </span>
-                                    <ChevronDownIcon class="ml-2 size-5 text-gray-400" aria-hidden="true" />
-                                </span>
-                            </MenuButton>
-
-                            <transition enter-active-class="transition ease-out duration-100"
-                                enter-from-class="transform opacity-0 scale-95"
-                                enter-to-class="transform opacity-100 scale-100"
-                                leave-active-class="transition ease-in duration-75"
-                                leave-from-class="transform opacity-100 scale-100"
-                                leave-to-class="transform opacity-0 scale-95">
-                                <MenuItems
-                                    class="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
-                                    <MenuItem v-for="item in userNavigation" :key="item.name" v-slot="{ active }">
-                                    <router-link v-if="item.href && !item.action" :to="item.href"
-                                        :class="[active ? 'bg-gray-50 outline-none' : '', 'block px-3 py-1 text-sm/6 text-gray-900 whitespace-nowrap']">
-                                        {{ item.name }}
-                                    </router-link>
-                                    <a v-else href="#" @click.prevent="item.action ? item.action() : null"
-                                        :class="[active ? 'bg-gray-50 outline-none' : '', 'block px-3 py-1 text-sm/6 text-gray-900 whitespace-nowrap']">
-                                        {{ item.name }}
-                                    </a>
-                                    </MenuItem>
-                                </MenuItems>
-
-                            </transition>
-                        </Menu>
                     </div>
                 </div>
             </div>
 
             <main class="py-10">
                 <div class="px-4 sm:px-6 lg:px-8">
-                    <!-- Your content -->
-                    <router-view></router-view>
+                    <div
+                        class="rounded-2xl border border-slate-800/70 bg-white p-6 shadow-2xl shadow-black/40 backdrop-blur">
+                        <!-- class="rounded-2xl border border-slate-800/70 bg-slate-900/60 p-6 shadow-2xl shadow-black/40 backdrop-blur"> -->
+                        <!-- Your content -->
+                        <router-view></router-view>
+                    </div>
                 </div>
             </main>
         </div>
@@ -293,25 +287,26 @@ import {
 import {
     Bars3Icon,
     BellIcon,
-    Cog6ToothIcon,
-    HomeIcon,
-    UsersIcon,
-    UserCircleIcon,
-    ShieldCheckIcon,
-    KeyIcon,
+    ChartBarIcon,
+    IdentificationIcon,
+    UserGroupIcon,
+    UserIcon,
+    AdjustmentsHorizontalIcon,
+    LockClosedIcon,
+    ArrowsRightLeftIcon,
+    ReceiptPercentIcon,
+    ArrowPathRoundedSquareIcon,
+    CubeTransparentIcon,
+    DocumentTextIcon,
+    BoltIcon,
+    PlusCircleIcon,
+    Square3Stack3DIcon,
+    ChartPieIcon,
+    ExclamationTriangleIcon,
     XMarkIcon,
-    Squares2X2Icon,
-    SquaresPlusIcon,
-    TableCellsIcon,
-    BookOpenIcon,
-    CurrencyDollarIcon,
-    RectangleGroupIcon,
-    BanknotesIcon,
-    BuildingLibraryIcon,
-    ReceiptRefundIcon,
 } from '@heroicons/vue/24/outline'
 
-import { ChevronDownIcon, MagnifyingGlassIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
+import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
 
 const userInitials = computed(() => {
     if (!loginUser.value.first_name || !loginUser.value.last_name) return "NA";
@@ -328,7 +323,7 @@ const navigation = ref(
         {
             name: 'Dashboard',
             href: '/dashboard',
-            icon: HomeIcon,
+            icon: ChartBarIcon,
             isExpandable: false,
             expanded: false,
             current: true,
@@ -338,7 +333,7 @@ const navigation = ref(
         {
             name: 'Borrower',
             href: '#',
-            icon: RectangleGroupIcon,
+            icon: IdentificationIcon,
             isExpandable: true,
             expanded: false,
             current: false,
@@ -347,7 +342,7 @@ const navigation = ref(
                 {
                     name: 'Borrowers',
                     href: '/dashboard/borrowers',
-                    icon: BanknotesIcon,
+                    icon: UserIcon,
                     current: false,
                     permissions: ['view-borrowers']
                 },
@@ -356,7 +351,7 @@ const navigation = ref(
         {
             name: 'Transaction',
             href: '#',
-            icon: BuildingLibraryIcon,
+            icon: ArrowsRightLeftIcon,
             isExpandable: true,
             expanded: false,
             current: false,
@@ -365,14 +360,14 @@ const navigation = ref(
                 {
                     name: 'Transactions',
                     href: '/dashboard/transactions',
-                    icon: CurrencyDollarIcon,
+                    icon: ReceiptPercentIcon,
                     current: false,
                     permissions: ['view-transactions']
                 },
                 {
                     name: 'Repayments',
                     href: '/dashboard/repayments',
-                    icon: ReceiptRefundIcon,
+                    icon: ArrowPathRoundedSquareIcon,
                     current: false,
                     permissions: ['view-repayments']
                 },
@@ -381,7 +376,7 @@ const navigation = ref(
         {
             name: 'Product',
             href: '#',
-            icon: Squares2X2Icon,
+            icon: CubeTransparentIcon,
             isExpandable: true,
             expanded: false,
             current: false,
@@ -390,37 +385,37 @@ const navigation = ref(
                 {
                     name: 'Books',
                     href: '/dashboard/books',
-                    icon: BookOpenIcon,
+                    icon: DocumentTextIcon,
                     current: false,
                     permissions: ['view-books']
                 },
                 {
                     name: 'Charges',
                     href: '/dashboard/charges',
-                    icon: CurrencyDollarIcon,
+                    icon: BoltIcon,
                     current: false,
                     permissions: ['view-charges']
                 },
                 {
                     name: 'Add Product',
                     href: '/dashboard/product/add',
-                    icon: SquaresPlusIcon,
+                    icon: PlusCircleIcon,
                     current: false,
                     permissions: ["add-product"]
                 },
                 {
                     name: 'Products',
                     href: '/dashboard/products',
-                    icon: TableCellsIcon,
+                    icon: Square3Stack3DIcon,
                     current: false,
                     permissions: ['view-products']
                 },
             ]
         },
-         {
+        {
             name: 'Reports',
             href: '#',
-            icon: Squares2X2Icon,
+            icon: ChartPieIcon,
             isExpandable: true,
             expanded: false,
             current: false,
@@ -429,7 +424,7 @@ const navigation = ref(
                 {
                     name: 'Delinquent Transactions',
                     href: '/dashboard/delinquentTransactions',
-                    icon: BookOpenIcon,
+                    icon: ExclamationTriangleIcon,
                     current: false,
                     permissions: ['view-reports']
                 }
@@ -438,7 +433,7 @@ const navigation = ref(
         {
             name: 'Team',
             href: '#',
-            icon: UsersIcon,
+            icon: UserGroupIcon,
             isExpandable: true,
             expanded: false,
             current: false,
@@ -447,21 +442,21 @@ const navigation = ref(
                 {
                     name: 'Users',
                     href: '/dashboard/team',
-                    icon: UserCircleIcon,
+                    icon: UserIcon,
                     current: false,
                     permissions: ['view-users']
                 },
                 {
                     name: 'Roles',
                     href: '/dashboard/roles',
-                    icon: ShieldCheckIcon,
+                    icon: AdjustmentsHorizontalIcon,
                     current: false,
                     permissions: ['view-roles']
                 },
                 {
                     name: 'Permissions',
                     href: '/dashboard/permissions',
-                    icon: KeyIcon,
+                    icon: LockClosedIcon,
                     current: false,
                     permissions: ['view-permissions']
                 }

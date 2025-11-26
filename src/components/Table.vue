@@ -1,25 +1,26 @@
 <template>
-    <div class="relative mt-8 sm:mx-0 bg-white border shadow-md rounded-md">
+    <div
+        class="relative mt-8 sm:mx-0 rounded-2xl border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-slate-100 shadow-sm shadow-slate-200">
         <!-- Search Section -->
         <div class="sm:col-span-4 flex items-center justify-between p-4">
             <!-- Search Box -->
             <input id="search" name="search" type="text" v-model="searchQuery" @input="handleSearch"
                 placeholder="Search..."
-                class="block w-60 sm:w-2/6 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6" />
+                class="block w-60 sm:w-2/6 rounded-lg border border-slate-200 bg-white py-2 px-3 text-slate-800 shadow-inner shadow-slate-200 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 sm:text-sm transition-colors" />
 
             <!-- Conditional Filters Section -->
             <!-- Filter Section -->
             <div v-if="showFilters" class="flex items-center space-x-2">
                 <!-- From Date -->
                 <Flatpickr v-model="fromDate" :options="{ dateFormat: 'Y-m-d' }" placeholder="From Date"
-                    class="block w-36 rounded-md border-gray-300 py-1.5 shadow-sm focus:ring-2 focus:ring-indigo-500 sm:text-sm" />
+                    class="block w-36 rounded-lg border border-slate-200 bg-white py-2 px-3 text-slate-800 shadow-inner shadow-slate-200 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 sm:text-sm" />
                 <!-- To Date -->
                 <Flatpickr v-model="toDate" :options="{ dateFormat: 'Y-m-d' }" placeholder="To Date"
-                    class="block w-36 rounded-md border-gray-300 py-1.5 shadow-sm focus:ring-2 focus:ring-indigo-500 sm:text-sm" />
+                    class="block w-36 rounded-lg border border-slate-200 bg-white py-2 px-3 text-slate-800 shadow-inner shadow-slate-200 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 sm:text-sm" />
 
                 <!-- Reset Filters Button -->
                 <button @click="resetFilters"
-                    class="p-1.5 h-4 w-4 flex items-center justify-center rounded-full bg-gray-300 text-black hover:bg-gray-200 focus:ring-2 focus:ring-gray-400"
+                    class="p-1.5 h-4 w-4 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 focus:ring-2 focus:ring-emerald-300/50"
                     aria-label="Reset Filters">
                     <i class="fas fa-times text-sm"></i>
                 </button>
@@ -28,20 +29,21 @@
         </div>
 
         <!-- Table Section -->
-        <div class="overflow-x-auto z-10">
-            <table v-loading="loading" class="z-10 p-2 px-4 min-w-full divide-y divide-gray-300 mt-4">
+        <div class="overflow-x-auto overflow-y-visible z-10">
+            <table v-loading="loading"
+                class="z-10 p-2 px-4 min-w-full divide-y divide-slate-200 mt-4 bg-white/60 rounded-xl shadow-inner shadow-slate-100">
                 <thead>
                     <tr>
                         <th v-for="column in columns" :key="column.Header"
-                            class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                            class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-700 whitespace-nowrap">
                             {{ column.Header }}
                         </th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200 bg-white">
+                <tbody class="divide-y divide-slate-100 bg-white/70">
                     <tr v-for="row in data" :key="row.id">
                         <td v-for="column in columns" :key="column.accessor"
-                            class="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                            class="px-3 py-4 text-sm text-slate-700 whitespace-nowrap">
                             <!-- Slot for Custom Content -->
                             <slot v-if="column.slotName" :name="column.slotName" :value="row"></slot>
                             <!-- Default Content -->
@@ -53,20 +55,20 @@
         </div>
 
         <!-- Pagination Section -->
-        <div class="p-2 mx-4 mt-4 flex flex-col sm:flex-row gap-y-2 items-center justify-end">
-            <div class="mr-2 items-start text-center">
+        <div class="p-2 mx-4 mt-4 flex flex-col sm:flex-row gap-y-2 items-center justify-end text-slate-600">
+            <div class="mr-2 items-start text-center text-sm">
                 Showing {{ pageCount }} Records out of {{ recordCount }}
             </div>
             <div class="mr-2">
                 <select v-model="pageSize"
-                    class="w-full pr-10 py-2 justify-between border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300">
+                    class="w-full pr-10 py-1 justify-between rounded-lg border border-slate-800 bg-slate-900 text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-500/60">
                     <option v-for="size in pageOptions" :key="size" :value="size">
                         {{ size }}
                     </option>
                 </select>
             </div>
-            <el-pagination :current-page="currentPage" :page-size="pageSize" :total="recordCount"
-                layout="prev, pager, next" @current-change="handlePageChange" />
+            <el-pagination class="el-pagination--dark" :current-page="currentPage" :page-size="pageSize"
+                :total="recordCount" layout="prev, pager, next" @current-change="handlePageChange" />
         </div>
     </div>
 </template>
@@ -187,3 +189,54 @@ const handlePageChange = (page) => {
     localStorage.setItem('page_index', page);
 };
 </script>
+
+<style scoped>
+:deep(.el-pagination.el-pagination--dark) {
+    --el-pagination-hover-color: #10b981;
+    --el-text-color-primary: #e2e8f0;
+    --el-border-color-lighter: #1f2937;
+    --el-border-color: #111827;
+    --el-text-color-placeholder: #9ca3af;
+}
+
+:deep(.el-pagination.el-pagination--dark button) {
+    background-color: #0f172a;
+    color: #e2e8f0;
+    border: 1px solid #1f2937;
+    border-radius: 0.5rem;
+}
+
+:deep(.el-pagination.el-pagination--dark button:hover:not(:disabled)) {
+    color: #10b981;
+    border-color: #10b981;
+    background-color: #111827;
+}
+
+:deep(.el-pagination.el-pagination--dark .el-pager li) {
+    background-color: #0f172a;
+    color: #e2e8f0;
+    border: 1px solid #1f2937;
+    border-radius: 0.75rem;
+    margin: 0 0.15rem;
+}
+
+:deep(.el-pagination.el-pagination--dark .el-pager li:hover) {
+    color: #10b981;
+    border-color: #10b981;
+    background-color: #111827;
+}
+
+:deep(.el-pagination.el-pagination--dark .el-pager li.is-active) {
+    color: #e2e8f0;
+    border-color: #334155;
+    background: linear-gradient(135deg, #111827, #0f172a);
+    box-shadow: 0 6px 18px -8px #0b1120;
+}
+
+:deep(.el-pagination.el-pagination--dark .btn-prev.is-disabled),
+:deep(.el-pagination.el-pagination--dark .btn-next.is-disabled) {
+    color: #64748b;
+    border-color: #1f2937;
+    background-color: #0b1120;
+}
+</style>

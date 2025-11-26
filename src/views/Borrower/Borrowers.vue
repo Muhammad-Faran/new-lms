@@ -314,40 +314,42 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="px-2 sm:px-2 lg:px-4">
+    <div class="px-2 sm:px-2 lg:px-4 ">
         <div class="sm:flex sm:items-center">
             <div class="sm:flex-auto">
-                <h1 class="text-base font-semibold text-gray-900">Borrowers</h1>
-                <p class="mt-2 text-sm text-gray-700">A list of all the borrowers in your account.</p>
+                <h1 class="text-base font-semibold text-slate-900">Borrowers</h1>
+                <p class="mt-2 text-sm text-slate-600">A list of all the borrowers in your account.</p>
             </div>
         </div>
 
-        <div>
+        <!-- mt-4 rounded-2xl border border-slate-800/70 bg-slate-900/70 p-4 shadow-2xl shadow-black/40 backdrop-blur -->
+        <div class="relative overflow-visible">
             <Table :columns="columns" :data="printerData" :fetchData="fetchPrinterData" :loading="loading"
                 :pageCount="pageCount" :recordCount="recordCount" :action="['Edit']" :actionOnClick="handleAction"
                 :onEdit="handleEdit" pageType="products">
 
                 <template #name="{ value }">
-                    <p class="cursor-pointer font-semibold text-gray-600" @click="handleEdit(value)">
+                    <p class="cursor-pointer font-semibold text-slate-100 hover:text-emerald-300"
+                        @click="handleEdit(value)">
                         {{ value.name }}
                     </p>
                 </template>
 
                 <template #status="{ value }">
-                    <span :class="[value.status === 1 ? 'bg-green-500' : 'bg-red-500',
-                        'inline-flex items-center gap-x-1.5 rounded-md px-3 py-1 text-xs font-medium text-white',
+                    <span :class="[value.status === 1 ? 'bg-emerald-600/80 text-emerald-50' : 'bg-rose-600/80 text-rose-50',
+                        'inline-flex items-center gap-x-1.5 rounded-full px-3 py-1 text-xs font-semibold shadow-sm shadow-black/30',
                     ]">
                         {{ value.status === 1 ? 'Enabled' : 'Disabled' }}
                     </span>
                 </template>
 
                 <template #actions="{ value }">
-                    <Menu as="div" class="relative inline-block text-left">
+                    <Menu as="div" class="inline-block text-left">
                         <div>
                             <MenuButton
-                                class="inline-flex w-full justify-center bg-gray-100 px-1 py-1 rounded-full text-sm font-medium text-white hover:bg-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
+                                class="inline-flex w-full justify-center rounded-full bg-slate-800/80 px-1 py-1 text-sm font-medium text-slate-100 shadow-sm shadow-black/30 hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/60">
 
-                                <EllipsisVerticalIcon class="h-4 w-4 text-black" aria-hidden="true" />
+                                <EllipsisVerticalIcon class="h-4 w-4 text-slate-100" aria-hidden="true" />
                             </MenuButton>
                         </div>
 
@@ -358,12 +360,12 @@ onMounted(() => {
                             leave-from-class="transform scale-100 opacity-100"
                             leave-to-class="transform scale-95 opacity-0">
                             <MenuItems
-                                class="z-10 absolute right-0 mt-2 w-36 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                                class="z-50 absolute right-0 mt-2 w-40 origin-top-right divide-y divide-slate-800 rounded-xl bg-slate-900 shadow-lg shadow-black/40 ring-1 ring-slate-800 focus:outline-none">
                                 <div class="px-1 py-1">
                                     <MenuItem v-slot="{ active }">
                                     <button :class="[
-                                        active ? 'bg-violet-500 text-white' : 'text-gray-900',
-                                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                        active ? 'bg-slate-800 text-emerald-300' : 'text-slate-100',
+                                        'group flex w-full items-center rounded-lg px-2 py-2 text-sm font-semibold',
                                     ]" @click="handleView(value)">
 
                                         View
@@ -371,8 +373,8 @@ onMounted(() => {
                                     </MenuItem>
                                     <MenuItem v-slot="{ active }">
                                     <button :class="[
-                                        active ? 'bg-violet-500 text-white' : 'text-gray-900',
-                                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                        active ? 'bg-slate-800 text-emerald-300' : 'text-slate-100',
+                                        'group flex w-full items-center rounded-lg px-2 py-2 text-sm font-semibold',
                                     ]" @click="handleConfigureBorrowerDetails(value)">
                                         Settings
                                     </button>
@@ -405,8 +407,8 @@ onMounted(() => {
                                     </MenuItem> -->
                                     <MenuItem v-slot="{ active }">
                                     <button :class="[
-                                        active ? 'bg-violet-500 text-white' : 'text-gray-900',
-                                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                        active ? 'bg-slate-800 text-emerald-300' : 'text-slate-100',
+                                        'group flex w-full items-center rounded-lg px-2 py-2 text-sm font-semibold',
                                     ]" @click="handleUpdateBorrowerStatus(value)">
 
                                         {{ value.status === 1 ? "Disable" : "Enable" }}
@@ -414,8 +416,8 @@ onMounted(() => {
                                     </MenuItem>
                                     <MenuItem v-slot="{ active }">
                                     <button :class="[
-                                        active ? 'bg-violet-500 text-white' : 'text-gray-900',
-                                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                        active ? 'bg-slate-800 text-emerald-300' : 'text-slate-100',
+                                        'group flex w-full items-center rounded-lg px-2 py-2 text-sm font-semibold',
                                     ]" @click="handleEdit(value)">
 
                                         Edit
