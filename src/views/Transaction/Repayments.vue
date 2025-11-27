@@ -268,7 +268,7 @@ onMounted(() => {
                 </button>
 
                 <select v-model="selectedProduct" id="productData" aria-placeholder="selected"
-                    class="block w-40 rounded-md border-gray-300 py-1.5 shadow-sm focus:ring-2 focus:ring-indigo-500 sm:text-sm">
+                    class="block w-40 rounded-md border-gray-300 text-black py-1.5 shadow-sm focus:ring-2 focus:ring-indigo-500 sm:text-sm">
                     <option value="" disabled selected>Select a product</option>
                     <option v-for="product in productData" :key="product.id" :value="product.id">
                         {{ product.name }}
@@ -276,7 +276,7 @@ onMounted(() => {
                 </select>
                 <!-- Export Button -->
                 <button @click="exportRepayment"
-                    class="px-4 py-2 text-xs font-medium text-white bg-[#75ba2c] rounded hover:bg-[#75ba2c] focus:outline-none focus:ring-1 focus:ring-indigo-400">
+                    class="px-4 py-2 text-xs font-medium text-white bg-slate-900 rounded hover:bg-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-400">
                     Export
                 </button>
             </div>

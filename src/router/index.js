@@ -233,6 +233,13 @@ const routes = [
         meta: { requiresAuth: true, permissions: ['update-applicants'] },
       },
       {
+        path: 'applicants/add',
+        name: 'AddApplicants',
+        component: ApplicantsForm,
+        props: true,
+        meta: { requiresAuth: true, permissions: ['update-applicants'] },
+      },
+      {
         path: 'transactions',
         name: 'Transactions',
         component: Transactions,

@@ -234,10 +234,10 @@
                                                                 <div @click="toggleDropdownBook"
                                                                     class="w-full px-4 py-2 border rounded-md bg-white cursor-pointer flex justify-between items-center">
                                                                     <span>
-                                                                        {{ selectedBooks.length > 0
+                                                                        {{selectedBooks.length > 0
                                                                             ? selectedBooks.map(option =>
                                                                                 option.name).join(', ')
-                                                                            : 'Select options' }}
+                                                                            : 'Select options'}}
                                                                     </span>
                                                                     <ChevronDownIcon class="w-4 h-4" />
                                                                 </div>
@@ -417,7 +417,7 @@
                                     </div>
                                     <div class="mt-8 flex justify-end">
                                         <button type="button" @click="handleStep1"
-                                            class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                            class="rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                             Next
                                         </button>
                                     </div>
@@ -446,11 +446,11 @@
 
             <div class="space-x-2 p-2 mt-4 flex justify-end">
                 <button type="button" @click="handleCancel"
-                    class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                    class="rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                     Cancel
                 </button>
                 <button type="button" @click="handleSubmit"
-                    class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                    class="rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                     Create Product
                 </button>
             </div>

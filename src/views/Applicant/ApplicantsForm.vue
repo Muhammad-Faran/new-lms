@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import { showMessageAlert } from "../../utils/alert";
@@ -8,7 +8,10 @@ import API from "../../utils/baseApi";
 const route = useRoute();
 const router = useRouter();
 
-const isEditMode = ref(route.path.includes("/edit"));
+const hasId = computed(() => !!route.params.id);
+const isEditMode = computed(() => hasId.value && route.path.includes("/edit"));
+const isAddMode = computed(() => !hasId.value || route.path.includes("/add"));
+const isViewMode = computed(() => hasId.value && !isEditMode.value);
 
 const form = reactive({
     first_name: "",
@@ -49,11 +52,17 @@ const fetchApplicant = async (id) => {
 };
 
 const handleSubmit = async () => {
+    if (isViewMode.value) return;
     try {
         loading.value = true;
-        await axios.put(API.APPLICANTS + `${route.params.id}`, form);
-        showMessageAlert({ message: "Successfully updated applicant", type: "success" });
-        handleCancel()
+        if (isEditMode.value) {
+            await axios.put(API.APPLICANTS + `${route.params.id}`, form);
+            showMessageAlert({ message: "Successfully updated applicant", type: "success" });
+        } else {
+            await axios.post(API.APPLICANTS, form);
+            showMessageAlert({ message: "Successfully created applicant", type: "success" });
+        }
+        handleCancel();
     } catch (error) {
         console.error("Error saving applicant data:", error);
         showMessageAlert({
@@ -76,7 +85,9 @@ const handleCancel = () => {
 };
 
 onMounted(() => {
-    fetchApplicant(route.params.id);
+    if (hasId.value) {
+        fetchApplicant(route.params.id);
+    }
 });
 </script>
 
@@ -86,7 +97,8 @@ onMounted(() => {
         <div class="space-y-12 sm:space-y-16" v-loading="loadingFetch">
             <div>
                 <h2 class="text-base/7 font-semibold text-gray-900">
-                    {{ isEditMode ? "Edit Applicant Information" : "Applicant Information" }}
+                    {{ isEditMode ? "Edit Applicant Information" : isAddMode ? "Add Applicant" : "Applicant Information"
+                    }}
                 </h2>
                 <p class="mt-1 max-w-2xl text-sm/6 text-gray-600">
                     Please review the applicant's information.
@@ -99,7 +111,7 @@ onMounted(() => {
                         <label for="first_name" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5">First
                             Name</label>
                         <div class="mt-2 sm:col-span-2 sm:mt-0">
-                            <input type="text" id="first_name" v-model="form.first_name" :disabled="!isEditMode"
+                            <input type="text" id="first_name" v-model="form.first_name" :disabled="isViewMode"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6" />
                         </div>
                     </div>
@@ -109,7 +121,7 @@ onMounted(() => {
                         <label for="last_name" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5">Last
                             Name</label>
                         <div class="mt-2 sm:col-span-2 sm:mt-0">
-                            <input type="text" id="last_name" v-model="form.last_name" :disabled="!isEditMode"
+                            <input type="text" id="last_name" v-model="form.last_name" :disabled="isViewMode"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6" />
                         </div>
                     </div>
@@ -118,7 +130,7 @@ onMounted(() => {
                     <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
                         <label for="cnic" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5">CNIC</label>
                         <div class="mt-2 sm:col-span-2 sm:mt-0">
-                            <input type="text" id="cnic" v-model="form.cnic" :disabled="!isEditMode"
+                            <input type="text" id="cnic" v-model="form.cnic" :disabled="isViewMode"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6" />
                         </div>
                     </div>
@@ -129,7 +141,7 @@ onMounted(() => {
                             Issuance Date</label>
                         <div class="mt-2 sm:col-span-2 sm:mt-0">
                             <input type="date" id="cnic_issuance_date" v-model="form.cnic_issuance_date"
-                                :disabled="!isEditMode"
+                                :disabled="isViewMode"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6" />
                         </div>
                     </div>
@@ -139,7 +151,7 @@ onMounted(() => {
                         <label for="wallet_id" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5">Wallet
                             ID</label>
                         <div class="mt-2 sm:col-span-2 sm:mt-0">
-                            <input type="text" id="wallet_id" v-model="form.wallet_id" :disabled="!isEditMode"
+                            <input type="text" id="wallet_id" v-model="form.wallet_id" :disabled="isViewMode"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6" />
                         </div>
                     </div>
@@ -149,7 +161,7 @@ onMounted(() => {
                         <label for="shipper_name" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5">Shipper
                             Name</label>
                         <div class="mt-2 sm:col-span-2 sm:mt-0">
-                            <input type="text" id="shipper_name" v-model="form.shipper_name" :disabled="!isEditMode"
+                            <input type="text" id="shipper_name" v-model="form.shipper_name" :disabled="isViewMode"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6" />
                         </div>
                     </div>
@@ -159,7 +171,7 @@ onMounted(() => {
                         <label for="shipper_id" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5">Shipper
                             ID</label>
                         <div class="mt-2 sm:col-span-2 sm:mt-0">
-                            <input type="text" id="shipper_id" v-model="form.shipper_id" :disabled="!isEditMode"
+                            <input type="text" id="shipper_id" v-model="form.shipper_id" :disabled="isViewMode"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6" />
                         </div>
                     </div>
@@ -169,7 +181,7 @@ onMounted(() => {
                         <label for="mobile_no" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5">Mobile
                             Number</label>
                         <div class="mt-2 sm:col-span-2 sm:mt-0">
-                            <input type="text" id="mobile_no" v-model="form.mobile_no" :disabled="!isEditMode"
+                            <input type="text" id="mobile_no" v-model="form.mobile_no" :disabled="isViewMode"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6" />
                         </div>
                     </div>
@@ -178,7 +190,7 @@ onMounted(() => {
                     <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
                         <label for="email" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5">Email</label>
                         <div class="mt-2 sm:col-span-2 sm:mt-0">
-                            <input type="email" id="email" v-model="form.email" :disabled="!isEditMode"
+                            <input type="email" id="email" v-model="form.email" :disabled="isViewMode"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6" />
                         </div>
                     </div>
@@ -188,7 +200,7 @@ onMounted(() => {
                         <label for="father_name" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5">Father
                             Name</label>
                         <div class="mt-2 sm:col-span-2 sm:mt-0">
-                            <input type="text" id="father_name" v-model="form.father_name" :disabled="!isEditMode"
+                            <input type="text" id="father_name" v-model="form.father_name" :disabled="isViewMode"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6" />
                         </div>
                     </div>
@@ -198,7 +210,7 @@ onMounted(() => {
                         <label for="mother_name" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5">Mother
                             Name</label>
                         <div class="mt-2 sm:col-span-2 sm:mt-0">
-                            <input type="text" id="mother_name" v-model="form.mother_name" :disabled="!isEditMode"
+                            <input type="text" id="mother_name" v-model="form.mother_name" :disabled="isViewMode"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6" />
                         </div>
                     </div>
@@ -207,7 +219,7 @@ onMounted(() => {
                     <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
                         <label for="address" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5">Address</label>
                         <div class="mt-2 sm:col-span-2 sm:mt-0">
-                            <textarea id="address" v-model="form.address" :disabled="!isEditMode"
+                            <textarea id="address" v-model="form.address" :disabled="isViewMode"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6"></textarea>
                         </div>
                     </div>
@@ -216,7 +228,7 @@ onMounted(() => {
                     <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
                         <label for="city" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5">City</label>
                         <div class="mt-2 sm:col-span-2 sm:mt-0">
-                            <input type="text" id="city" v-model="form.city" :disabled="!isEditMode"
+                            <input type="text" id="city" v-model="form.city" :disabled="isViewMode"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6" />
                         </div>
                     </div>
@@ -226,7 +238,7 @@ onMounted(() => {
                         <label for="dob" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5">Date of
                             Birth</label>
                         <div class="mt-2 sm:col-span-2 sm:mt-0">
-                            <input type="date" id="dob" v-model="form.dob" :disabled="!isEditMode"
+                            <input type="date" id="dob" v-model="form.dob" :disabled="isViewMode"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6" />
                         </div>
                     </div>
@@ -235,13 +247,13 @@ onMounted(() => {
                         <label for="cnic_front_image" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5">
                             CNIC Front Image
                         </label>
-                        <div v-if="isEditMode" class="mt-2 sm:col-span-2 sm:mt-0">
+                        <div v-if="isEditMode || isAddMode" class="mt-2 sm:col-span-2 sm:mt-0">
                             <input type="file" id="cnic_front_image"
-                                @change="handleFileUpload('cnic_front_image', $event)" :disabled="!isEditMode"
+                                @change="handleFileUpload('cnic_front_image', $event)" :disabled="isViewMode"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6" />
                         </div>
 
-                        <div v-if="!isEditMode" class="mt-2 sm:col-span-2 sm:mt-0">
+                        <div v-if="isViewMode" class="mt-2 sm:col-span-2 sm:mt-0">
                             <img :src="form.cnic_front_image" alt="CNIC Front"
                                 class="w-auto h-32 object-cover rounded shadow" />
                         </div>
@@ -251,12 +263,12 @@ onMounted(() => {
                         <label for="cnic_back_image" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5">
                             CNIC Back Image
                         </label>
-                        <div v-if="isEditMode" class="mt-2 sm:col-span-2 sm:mt-0">
+                        <div v-if="isEditMode || isAddMode" class="mt-2 sm:col-span-2 sm:mt-0">
                             <input type="file" id="cnic_back_image"
-                                @change="handleFileUpload('cnic_back_image', $event)" :disabled="!isEditMode"
+                                @change="handleFileUpload('cnic_back_image', $event)" :disabled="isViewMode"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6" />
                         </div>
-                        <div v-if="!isEditMode" class="mt-2 sm:col-span-2 sm:mt-0">
+                        <div v-if="isViewMode" class="mt-2 sm:col-span-2 sm:mt-0">
                             <img :src="form.cnic_back_image" alt="CNIC Front"
                                 class="w-auto h-32 object-cover rounded shadow" />
                         </div>
@@ -267,11 +279,11 @@ onMounted(() => {
         </div>
 
         <div class="mt-6 flex items-center justify-end gap-x-6">
-            <button v-if="!isEditMode" type="button" class="text-sm font-semibold text-gray-900" @click="handleCancel">
+            <button type="button" class="text-sm font-semibold text-gray-900" @click="handleCancel">
                 Cancel
             </button>
-            <button v-if="isEditMode" type="submit" class="bg-green-500 text-white px-4 py-2 rounded">
-                Save
+            <button v-if="!isViewMode" type="submit" class="bg-slate-900 rounded-md text-white px-4 py-2 rounded">
+                {{ isEditMode ? 'Update' : 'Create' }}
             </button>
         </div>
     </form>

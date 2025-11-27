@@ -308,6 +308,10 @@ const handleUpdateApplicantStatus = async (row) => {
     }
 }
 
+const goToAddUser = () => {
+    router.push({ name: 'AddApplicants' });
+}
+
 onMounted(() => {
     fetchPrinterData({ pageIndex: 0, pageSize: 20 })
 })
@@ -319,6 +323,13 @@ onMounted(() => {
             <div class="sm:flex-auto">
                 <h1 class="text-base font-semibold text-slate-900">Applicants</h1>
                 <p class="mt-2 text-sm text-slate-600">A list of all the applicants in your account.</p>
+            </div>
+            <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+                <button type="button"
+                    class="block rounded-md bg-slate-900 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    @click="goToAddUser">
+                    Add Applicant
+                </button>
             </div>
         </div>
 
@@ -485,7 +496,8 @@ onMounted(() => {
                                     <div v-if="currentTab === 'Applicant'">
                                         <div class="px-4 sm:px-0">
                                             <div class="px-4 sm:px-0">
-                                                <h3 class="text-base/7 font-semibold text-gray-900">Applicant Information
+                                                <h3 class="text-base/7 font-semibold text-gray-900">Applicant
+                                                    Information
                                                 </h3>
                                                 <p class="mt-1 max-w-2xl text-sm/6 text-gray-500">Personal details and
                                                     application.

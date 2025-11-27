@@ -264,7 +264,7 @@ onMounted(() => {
                     </button>
 
                     <select v-model="selectedProduct" id="productData" aria-placeholder="selected"
-                        class="block w-40 rounded-md border-gray-300 py-1.5 shadow-sm focus:ring-2 focus:ring-indigo-500 sm:text-sm">
+                        class="block w-40 rounded-md border-gray-300 py-1.5 text-black shadow-sm focus:ring-2 focus:ring-indigo-500 sm:text-sm">
                         <option value="" disabled selected>Select a product</option>
                         <option v-for="product in productData" :key="product.id" :value="product.id">
                             {{ product.name }}
@@ -272,7 +272,7 @@ onMounted(() => {
                     </select>
 
                     <select v-model="selectedStatus" id="statuses"
-                        class="block w-40 rounded-md border-gray-300 py-1.5 shadow-sm focus:ring-2 focus:ring-indigo-500 sm:text-sm">
+                        class="block w-40 rounded-md border-gray-300 text-black py-1.5 shadow-sm focus:ring-2 focus:ring-indigo-500 sm:text-sm">
                         <option value="" disabled selected>Select a status</option>
                         <option v-for="status in statuses" :key="status" :value="status" class="capitalize">
                             {{ status }}
@@ -284,7 +284,7 @@ onMounted(() => {
 
                     <!-- Export Button -->
                     <button @click="exportTransactions"
-                        class="px-4 py-2 text-xs font-medium text-white bg-[#75ba2c] rounded hover:bg-[#75ba2c] focus:outline-none focus:ring-1 focus:ring-indigo-400">
+                        class="px-4 py-2 text-xs font-medium text-white bg-slate-900 rounded hover:bg-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-400">
                         Export
                     </button>
                 </div>
@@ -487,43 +487,42 @@ onMounted(() => {
                                                         {{ selectedRowData.Applicant.cnic_issuance_date }}
                                                     </dd>
                                                 </div>
-                                                  <!-- CNIC Front Image Preview -->
-                                                    <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                                        <dt class="text-sm font-medium text-gray-900">CNIC Front Image</dt>
-                                                        <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">
-                                                            <img 
-                                                                :src="selectedRowData.Applicant.cnic_front_image" 
-                                                                alt="CNIC Front Image" 
-                                                                class="w-24 h-16 cursor-pointer rounded-lg shadow"
-                                                                @click="openImageModal(selectedRowData.Applicant.cnic_front_image)"
-                                                            />
-                                                        </dd>
-                                                    </div>
+                                                <!-- CNIC Front Image Preview -->
+                                                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                                    <dt class="text-sm font-medium text-gray-900">CNIC Front Image</dt>
+                                                    <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">
+                                                        <img :src="selectedRowData.Applicant.cnic_front_image"
+                                                            alt="CNIC Front Image"
+                                                            class="w-24 h-16 cursor-pointer rounded-lg shadow"
+                                                            @click="openImageModal(selectedRowData.Applicant.cnic_front_image)" />
+                                                    </dd>
+                                                </div>
 
-                                                    <!-- CNIC Back Image Preview -->
-                                                    <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                                        <dt class="text-sm font-medium text-gray-900">CNIC Back Image</dt>
-                                                        <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">
-                                                            <img 
-                                                                :src="selectedRowData.Applicant.cnic_back_image" 
-                                                                alt="CNIC Back Image" 
-                                                                class="w-24 h-16 cursor-pointer rounded-lg shadow"
-                                                                @click="openImageModal(selectedRowData.Applicant.cnic_back_image)"
-                                                            />
-                                                        </dd>
-                                                    </div>
+                                                <!-- CNIC Back Image Preview -->
+                                                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                                    <dt class="text-sm font-medium text-gray-900">CNIC Back Image</dt>
+                                                    <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">
+                                                        <img :src="selectedRowData.Applicant.cnic_back_image"
+                                                            alt="CNIC Back Image"
+                                                            class="w-24 h-16 cursor-pointer rounded-lg shadow"
+                                                            @click="openImageModal(selectedRowData.Applicant.cnic_back_image)" />
+                                                    </dd>
+                                                </div>
 
-                                                    <!-- Full-Screen Image Modal -->
-                                                    <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-                                                        <div class="relative">
-                                                            <!-- Close Button -->
-                                                            <button @click="showModal = false" class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-lg">
-                                                                ❌
-                                                            </button>
-                                                            <!-- Enlarged Image -->
-                                                            <img :src="modalImage" class="max-w-screen-md max-h-screen-md rounded-lg shadow-lg" />
-                                                        </div>
+                                                <!-- Full-Screen Image Modal -->
+                                                <div v-if="showModal"
+                                                    class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+                                                    <div class="relative">
+                                                        <!-- Close Button -->
+                                                        <button @click="showModal = false"
+                                                            class="absolute top-2 right-2 bg-white p-2 rounded-full shadow-lg">
+                                                            ❌
+                                                        </button>
+                                                        <!-- Enlarged Image -->
+                                                        <img :src="modalImage"
+                                                            class="max-w-screen-md max-h-screen-md rounded-lg shadow-lg" />
                                                     </div>
+                                                </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Mobile Number</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">

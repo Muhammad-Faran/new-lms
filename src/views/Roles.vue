@@ -98,7 +98,7 @@ onMounted(() => {
             </div>
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
                 <button type="button"
-                    class="block rounded-md bg-[#75ba2c] px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-[#78aa43] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    class="block rounded-md bg-slate-900 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     @click="goToAddRole">
                     Add Role
                 </button>
