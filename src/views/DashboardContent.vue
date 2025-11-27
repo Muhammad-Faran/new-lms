@@ -43,7 +43,7 @@ const fetchProductsData = async () => {
 
 const fetchShipperNamesData = async () => {
   try {
-    const response = await axios.get(API.BORROWERS_SHIPPER_NAME);
+    const response = await axios.get(API.APPLICANTS_SHIPPER_NAME);
 
     const {
       shipper_names

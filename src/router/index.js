@@ -16,15 +16,15 @@ import BookForm from '../views/Product/Books/BookForm.vue';
 import ChargeForm from '../views/Product/Charges/ChargeForm.vue';
 import Products from '../views/Product/Products.vue';
 import ViewProducts from '../views/Product/ViewProducts.vue';
-import Borrowers from '../views/Borrower/Borrowers.vue';
-import BorrowersForm from '../views/Borrower/BorrowersForm.vue';
-import SyncBorrowerProducts from '../views/Borrower/SyncBorrowerProducts.vue';
-import AssignFinancingPolicy from '../views/Borrower/AssignFinancingPolicy.vue';
+import Applicants from '../views/Applicant/Applicants.vue';
+import ApplicantsForm from '../views/Applicant/ApplicantsForm.vue';
+import SyncApplicantProducts from '../views/Applicant/SyncApplicantProducts.vue';
+import AssignFinancingPolicy from '../views/Applicant/AssignFinancingPolicy.vue';
 import ChangePassword from '../views/ChangePassword.vue';
-import AssignCreditLimit from '../views/Borrower/AssignCreditLimit.vue';
+import AssignCreditLimit from '../views/Applicant/AssignCreditLimit.vue';
 import Transactions from '../views/Transaction/Transactions.vue';
 import Repayments from '../views/Transaction/Repayments.vue';
-import ConfigureBorrowerDetails from '../views/Borrower/ConfigureBorrowerDetails.vue';
+import ConfigureApplicantDetails from '../views/Applicant/ConfigureApplicantDetails.vue';
 
 const routes = [
   {
@@ -184,53 +184,53 @@ const routes = [
         meta: { requiresAuth: true, permissions: ['view-products'] },
       },
       {
-        path: 'borrowers',
-        name: 'Borrowers',
-        component: Borrowers,
+        path: 'applicants',
+        name: 'Applicants',
+        component: Applicants,
         props: true,
-        meta: { requiresAuth: true, permissions: ['view-borrowers'] },
+        meta: { requiresAuth: true, permissions: ['view-applicants'] },
       },
       {
-        path: 'borrowers/view/:id',
-        name: 'ViewBorrowers',
-        component: BorrowersForm,
+        path: 'applicants/view/:id',
+        name: 'ViewApplicants',
+        component: ApplicantsForm,
         props: true,
-        meta: { requiresAuth: true, permissions: ['view-borrowers'] },
+        meta: { requiresAuth: true, permissions: ['view-applicants'] },
       },
       {
-        path: 'borrowers/:id/configure-borrower-details',
-        name: 'ConfigureBorrowerDetails',
-        component: ConfigureBorrowerDetails,
+        path: 'applicants/:id/configure-applicant-details',
+        name: 'ConfigureApplicantDetails',
+        component: ConfigureApplicantDetails,
         props: true,
-        meta: { requiresAuth: true, permissions: ['sync-borrower-products', 'assign-credit-limit'] },
+        meta: { requiresAuth: true, permissions: ['sync-applicant-products', 'assign-credit-limit'] },
       },
       {
-        path: 'borrowers/:id/sync-products',
-        name: 'SyncBorrowerProducts',
-        component: SyncBorrowerProducts,
+        path: 'applicants/:id/sync-products',
+        name: 'SyncApplicantProducts',
+        component: SyncApplicantProducts,
         props: true,
-        meta: { requiresAuth: true, permissions: ['sync-borrower-products'] },
+        meta: { requiresAuth: true, permissions: ['sync-applicant-products'] },
       },
       {
-        path: 'borrowers/:id/assign-creditLimit',
+        path: 'applicants/:id/assign-creditLimit',
         name: 'AssignCreditLimit',
         component: AssignCreditLimit,
         props: true,
         meta: { requiresAuth: true, permissions: ['assign-credit-limit'] },
       },
       {
-        path: 'borrowers/:id/assign-financingPolicy',
+        path: 'applicants/:id/assign-financingPolicy',
         name: 'AssignFinancingPolicy',
         component: AssignFinancingPolicy,
         props: true,
         meta: { requiresAuth: true, permissions: ['assign-credit-limit'] },
       },
       {
-        path: 'borrowers/edit/:id',
-        name: 'EditBorrowers',
-        component: BorrowersForm,
+        path: 'applicants/edit/:id',
+        name: 'EditApplicants',
+        component: ApplicantsForm,
         props: true,
-        meta: { requiresAuth: true, permissions: ['update-borrowers'] },
+        meta: { requiresAuth: true, permissions: ['update-applicants'] },
       },
       {
         path: 'transactions',

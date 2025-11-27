@@ -32,15 +32,15 @@ const form = reactive({
 const loading = ref(false);
 const loadingFetch = ref(false);
 
-const fetchBorrower = async (id) => {
+const fetchApplicant = async (id) => {
     try {
         loadingFetch.value = true;
-        const response = await axios.get(API.BORROWERS + `${id}`);
+        const response = await axios.get(API.APPLICANTS + `${id}`);
         Object.assign(form, response.data.data);
     } catch (error) {
-        console.error("Error fetching borrower data:", error);
+        console.error("Error fetching applicant data:", error);
         showMessageAlert({
-            message: error.response?.data?.message || "Failed to load borrower data.",
+            message: error.response?.data?.message || "Failed to load applicant data.",
             type: "error",
         });
     } finally {
@@ -51,13 +51,13 @@ const fetchBorrower = async (id) => {
 const handleSubmit = async () => {
     try {
         loading.value = true;
-        await axios.put(API.BORROWERS + `${route.params.id}`, form);
-        showMessageAlert({ message: "Successfully updated borrower", type: "success" });
+        await axios.put(API.APPLICANTS + `${route.params.id}`, form);
+        showMessageAlert({ message: "Successfully updated applicant", type: "success" });
         handleCancel()
     } catch (error) {
-        console.error("Error saving borrower data:", error);
+        console.error("Error saving applicant data:", error);
         showMessageAlert({
-            message: error.response?.data?.message || "Failed to save borrower data.",
+            message: error.response?.data?.message || "Failed to save applicant data.",
             type: "error",
         });
     } finally {
@@ -72,11 +72,11 @@ const handleFileUpload = (field, event) => {
 
 
 const handleCancel = () => {
-    router.push('/dashboard/borrowers');
+    router.push('/dashboard/applicants');
 };
 
 onMounted(() => {
-    fetchBorrower(route.params.id);
+    fetchApplicant(route.params.id);
 });
 </script>
 
@@ -86,10 +86,10 @@ onMounted(() => {
         <div class="space-y-12 sm:space-y-16" v-loading="loadingFetch">
             <div>
                 <h2 class="text-base/7 font-semibold text-gray-900">
-                    {{ isEditMode ? "Edit Borrower Information" : "Borrower Information" }}
+                    {{ isEditMode ? "Edit Applicant Information" : "Applicant Information" }}
                 </h2>
                 <p class="mt-1 max-w-2xl text-sm/6 text-gray-600">
-                    Please review the borrower's information.
+                    Please review the applicant's information.
                 </p>
 
                 <div

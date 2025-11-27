@@ -106,7 +106,7 @@ const toDate = ref(null);
 const pageSize = ref(20);
 const searchQuery = ref('');
 const currentPage = ref(
-    route.path === '/dashboard/borrowers'
+    route.path === '/dashboard/applicants'
         ? parseInt(localStorage.getItem('page_index')) || "1"
         : 1
 );

@@ -42,7 +42,7 @@ const open = ref(false)
 const selectedRowData = ref(null);
 
 const tabs = ref([
-    { name: 'Borrower', current: true },
+    { name: 'Applicant', current: true },
     { name: 'Shipper Credit Score', current: false },
     { name: 'Shipper Info', current: false },
     { name: 'Shipper KYC', current: false },
@@ -51,13 +51,13 @@ const tabs = ref([
 ]);
 
 
-const currentTab = ref('Borrower');
+const currentTab = ref('Applicant');
 
 const changeTab = (tabName) => {
     currentTab.value = tabName;
 };
 const resetTab = () => {
-    currentTab.value = 'Borrower';
+    currentTab.value = 'Applicant';
 };
 
 const openImageModal = (imageUrl) => {
@@ -98,11 +98,11 @@ const fetchPrinterData = async ({ pageIndex = 0, pageSize = 10, search = '' }) =
             page: pageIndex + 1, // Convert 0-based index to 1-based
             per_page: pageSize,
             search: search.trim(), // Trim whitespace from the search query
-            sort_field: "borrowers.id",
+            sort_field: "applicants.id",
             sort_order: "DESC"
         };
 
-        const response = await axios.get(API.BORROWERS, {
+        const response = await axios.get(API.APPLICANTS, {
             params,
         });
 
@@ -124,11 +124,11 @@ const fetchPrinterData = async ({ pageIndex = 0, pageSize = 10, search = '' }) =
 
 const loadingRefresh = ref(false);
 
-const refreshOfacNacta = async (borrowerId) => {
+const refreshOfacNacta = async (applicantId) => {
     loadingRefresh.value = true; // Show loader
     try {
         const response = await axios.post(API.REFRESH_OFAC_NACTA, {
-            borrower_id: borrowerId,
+            applicant_id: applicantId,
         });
 
         // Update the selectedRowData dynamically
@@ -142,11 +142,11 @@ const refreshOfacNacta = async (borrowerId) => {
     }
 };
 
-const refreshShipperCreditScore = async (borrowerId) => {
+const refreshShipperCreditScore = async (applicantId) => {
     loadingRefresh.value = true; // Show loader
     try {
         const response = await axios.post(API.REFRESH_SHIPPER_CREDIT_SCORE, {
-            borrower_id: borrowerId,
+            applicant_id: applicantId,
         });
 
         // Update the selectedRowData dynamically
@@ -160,11 +160,11 @@ const refreshShipperCreditScore = async (borrowerId) => {
     }
 };
 
-const refreshShipperInfo = async (borrowerId) => {
+const refreshShipperInfo = async (applicantId) => {
     loadingRefresh.value = true; // Show loader
     try {
         const response = await axios.post(API.REFRESH_SHIPPER_INFO, {
-            borrower_id: borrowerId,
+            applicant_id: applicantId,
         });
 
         // Update the selectedRowData dynamically
@@ -178,11 +178,11 @@ const refreshShipperInfo = async (borrowerId) => {
     }
 };
 
-const refreshShipperKYC = async (borrowerId) => {
+const refreshShipperKYC = async (applicantId) => {
     loadingRefresh.value = true; // Show loader
     try {
         const response = await axios.post(API.REFRESH_SHIPPER_KYC, {
-            borrower_id: borrowerId,
+            applicant_id: applicantId,
         });
 
         // Update the selectedRowData dynamically
@@ -196,11 +196,11 @@ const refreshShipperKYC = async (borrowerId) => {
     }
 };
 
-const refreshShipperPricing = async (borrowerId) => {
+const refreshShipperPricing = async (applicantId) => {
     loadingRefresh.value = true; // Show loader
     try {
         const response = await axios.post(API.REFRESH_SHIPPER_PRICING, {
-            borrower_id: borrowerId,
+            applicant_id: applicantId,
         });
 
         // Update the selectedRowData dynamically
@@ -236,27 +236,27 @@ const handleView = async (row) => {
     open.value = true
 
     // router.push({
-    //     name: 'ViewBorrowers',
+    //     name: 'ViewApplicants',
     //     params: { id: row.id },
     // });
 }
 
-const handleSyncBorrowerProduct = async (row) => {
+const handleSyncApplicantProduct = async (row) => {
     router.push({
-        name: 'SyncBorrowerProducts',
+        name: 'SyncApplicantProducts',
         params: { id: row.id },
         state: {
-            BorrowerData: JSON.stringify(row),
+            ApplicantData: JSON.stringify(row),
         },
     });
 }
 
-const handleConfigureBorrowerDetails = async (row) => {
+const handleConfigureApplicantDetails = async (row) => {
     router.push({
-        name: 'ConfigureBorrowerDetails',
+        name: 'ConfigureApplicantDetails',
         params: { id: row.id },
         state: {
-            BorrowerData: JSON.stringify(row),
+            ApplicantData: JSON.stringify(row),
         },
     });
 }
@@ -266,7 +266,7 @@ const handleAssignCreditLimit = async (row) => {
         name: 'AssignCreditLimit',
         params: { id: row.id },
         state: {
-            BorrowerData: JSON.stringify(row),
+            ApplicantData: JSON.stringify(row),
         },
     });
 }
@@ -276,19 +276,19 @@ const handleAssignFinancingPolicy = async (row) => {
         name: 'AssignFinancingPolicy',
         params: { id: row.id },
         state: {
-            BorrowerData: JSON.stringify(row),
+            ApplicantData: JSON.stringify(row),
         },
     });
 }
 
 const handleEdit = async (row) => {
     router.push({
-        name: 'EditBorrowers',
+        name: 'EditApplicants',
         params: { id: row.id },
     });
 }
 
-const handleUpdateBorrowerStatus = async (row) => {
+const handleUpdateApplicantStatus = async (row) => {
     try {
         loading.value = true;
 
@@ -297,7 +297,7 @@ const handleUpdateBorrowerStatus = async (row) => {
             wallet_id: row.wallet_id
         };
 
-        await axios.patch(API.BORROWERS_STATUS, payload);
+        await axios.patch(API.APPLICANTS_STATUS, payload);
         showMessageAlert({ message: 'Successfully Update Status', type: 'success' });
         fetchPrinterData({ pageIndex: 0, pageSize: 20 })
     } catch (error) {
@@ -317,8 +317,8 @@ onMounted(() => {
     <div class="px-2 sm:px-2 lg:px-4 ">
         <div class="sm:flex sm:items-center">
             <div class="sm:flex-auto">
-                <h1 class="text-base font-semibold text-slate-900">Borrowers</h1>
-                <p class="mt-2 text-sm text-slate-600">A list of all the borrowers in your account.</p>
+                <h1 class="text-base font-semibold text-slate-900">Applicants</h1>
+                <p class="mt-2 text-sm text-slate-600">A list of all the applicants in your account.</p>
             </div>
         </div>
 
@@ -375,7 +375,7 @@ onMounted(() => {
                                     <button :class="[
                                         active ? 'bg-slate-800 text-emerald-300' : 'text-slate-100',
                                         'group flex w-full items-center rounded-lg px-2 py-2 text-sm font-semibold',
-                                    ]" @click="handleConfigureBorrowerDetails(value)">
+                                    ]" @click="handleConfigureApplicantDetails(value)">
                                         Settings
                                     </button>
                                     </MenuItem>
@@ -400,7 +400,7 @@ onMounted(() => {
                                     <button :class="[
                                         active ? 'bg-violet-500 text-white' : 'text-gray-900',
                                         'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                                    ]" @click="handleSyncBorrowerProduct(value)">
+                                    ]" @click="handleSyncApplicantProduct(value)">
 
                                         Sync Products
                                     </button>
@@ -409,7 +409,7 @@ onMounted(() => {
                                     <button :class="[
                                         active ? 'bg-slate-800 text-emerald-300' : 'text-slate-100',
                                         'group flex w-full items-center rounded-lg px-2 py-2 text-sm font-semibold',
-                                    ]" @click="handleUpdateBorrowerStatus(value)">
+                                    ]" @click="handleUpdateApplicantStatus(value)">
 
                                         {{ value.status === 1 ? "Disable" : "Enable" }}
                                     </button>
@@ -482,10 +482,10 @@ onMounted(() => {
                                 </div>
 
                                 <div class="pt-4">
-                                    <div v-if="currentTab === 'Borrower'">
+                                    <div v-if="currentTab === 'Applicant'">
                                         <div class="px-4 sm:px-0">
                                             <div class="px-4 sm:px-0">
-                                                <h3 class="text-base/7 font-semibold text-gray-900">Borrower Information
+                                                <h3 class="text-base/7 font-semibold text-gray-900">Applicant Information
                                                 </h3>
                                                 <p class="mt-1 max-w-2xl text-sm/6 text-gray-500">Personal details and
                                                     application.

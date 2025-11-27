@@ -331,7 +331,7 @@ const navigation = ref(
             children: [],
         },
         {
-            name: 'Borrower',
+            name: 'Applicant',
             href: '#',
             icon: IdentificationIcon,
             isExpandable: true,
@@ -340,11 +340,11 @@ const navigation = ref(
             permissions: [],
             children: [
                 {
-                    name: 'Borrowers',
-                    href: '/dashboard/borrowers',
+                    name: 'Applicants',
+                    href: '/dashboard/applicants',
                     icon: UserIcon,
                     current: false,
-                    permissions: ['view-borrowers']
+                    permissions: ['view-applicants']
                 },
             ]
         },
