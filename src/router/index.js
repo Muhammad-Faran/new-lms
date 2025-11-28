@@ -25,6 +25,7 @@ import AssignCreditLimit from '../views/Applicant/AssignCreditLimit.vue';
 import Transactions from '../views/Transaction/Transactions.vue';
 import Repayments from '../views/Transaction/Repayments.vue';
 import ConfigureApplicantDetails from '../views/Applicant/ConfigureApplicantDetails.vue';
+import AddTransactions from '../views/Transaction/AddTransactions.vue';
 
 const routes = [
   {
@@ -245,6 +246,13 @@ const routes = [
         component: Transactions,
         props: true,
         meta: { requiresAuth: true, permissions: ['view-transactions'] },
+      },
+      {
+        path: 'transactions/add',
+        name: 'AddTransactions',
+        component: AddTransactions,
+        props: true,
+        meta: { requiresAuth: false, permissions: [] },
       },
       {
         path: 'repayments',

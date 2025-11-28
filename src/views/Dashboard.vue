@@ -358,6 +358,13 @@ const navigation = ref(
             permissions: [],
             children: [
                 {
+                    name: 'Add Transactions',
+                    href: '/dashboard/transactions/add',
+                    icon: ReceiptPercentIcon,
+                    current: false,
+                    permissions: []
+                },
+                {
                     name: 'Transactions',
                     href: '/dashboard/transactions',
                     icon: ReceiptPercentIcon,
