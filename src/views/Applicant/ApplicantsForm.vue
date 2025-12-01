@@ -21,9 +21,6 @@ const form = reactive({
     cnic_back_image: null,
     cnic_issuance_date: "",
     mobile_no: "",
-    wallet_id: "",
-    shipper_name: "",
-    shipper_id: "",
     email: "",
     father_name: "",
     mother_name: "",
@@ -59,7 +56,7 @@ const handleSubmit = async () => {
             await axios.put(API.APPLICANTS + `${route.params.id}`, form);
             showMessageAlert({ message: "Successfully updated applicant", type: "success" });
         } else {
-            await axios.post(API.APPLICANTS, form);
+            await axios.post(API.ADDAPPLICANTS, form);
             showMessageAlert({ message: "Successfully created applicant", type: "success" });
         }
         handleCancel();
@@ -146,36 +143,7 @@ onMounted(() => {
                         </div>
                     </div>
 
-                    <!-- Wallet ID -->
-                    <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
-                        <label for="wallet_id" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5">Wallet
-                            ID</label>
-                        <div class="mt-2 sm:col-span-2 sm:mt-0">
-                            <input type="text" id="wallet_id" v-model="form.wallet_id" :disabled="isViewMode"
-                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6" />
-                        </div>
-                    </div>
-
-                    <!-- Shipper name -->
-                    <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
-                        <label for="shipper_name" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5">Shipper
-                            Name</label>
-                        <div class="mt-2 sm:col-span-2 sm:mt-0">
-                            <input type="text" id="shipper_name" v-model="form.shipper_name" :disabled="isViewMode"
-                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6" />
-                        </div>
-                    </div>
-
-                    <!-- Shipper ID -->
-                    <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
-                        <label for="shipper_id" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5">Shipper
-                            ID</label>
-                        <div class="mt-2 sm:col-span-2 sm:mt-0">
-                            <input type="text" id="shipper_id" v-model="form.shipper_id" :disabled="isViewMode"
-                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6" />
-                        </div>
-                    </div>
-
+                    
                     <!-- Mobile Number -->
                     <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
                         <label for="mobile_no" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5">Mobile

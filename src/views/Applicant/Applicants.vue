@@ -20,9 +20,6 @@ const columns = [
     { Header: 'ID', accessor: 'id' },
     { Header: 'First Name', accessor: 'first_name' },
     { Header: 'Last Name', accessor: 'last_name' },
-    { Header: 'Shipper Name', accessor: 'shipper_name' },
-    { Header: 'Wallet ID', accessor: 'wallet_id' },
-    { Header: 'Shipper ID', accessor: 'shipper_id' },
     { Header: 'Mobile', accessor: 'mobile_no' },
     { Header: 'Email', accessor: 'email' },
     { Header: 'CNIC', accessor: 'cnic' },
@@ -43,10 +40,6 @@ const selectedRowData = ref(null);
 
 const tabs = ref([
     { name: 'Applicant', current: true },
-    { name: 'Shipper Credit Score', current: false },
-    { name: 'Shipper Info', current: false },
-    { name: 'Shipper KYC', current: false },
-    { name: 'Shipper Pricing', current: false },
     { name: 'Ofac Nacta', current: false }
 ]);
 
@@ -142,77 +135,6 @@ const refreshOfacNacta = async (applicantId) => {
     }
 };
 
-const refreshShipperCreditScore = async (applicantId) => {
-    loadingRefresh.value = true; // Show loader
-    try {
-        const response = await axios.post(API.REFRESH_SHIPPER_CREDIT_SCORE, {
-            applicant_id: applicantId,
-        });
-
-        // Update the selectedRowData dynamically
-        selectedRowData.value.credit_engine_data.shipper_credit_score = response.data.data.data;
-
-        showMessageAlert({ message: 'Shipper Credit Score Refreshed Successfully', type: 'success' });
-    } catch (error) {
-        showMessageAlert({ message: error.response?.data?.error || 'Failed to refresh Shipper Credit Score', type: 'error' });
-    } finally {
-        loadingRefresh.value = false; // Hide loader
-    }
-};
-
-const refreshShipperInfo = async (applicantId) => {
-    loadingRefresh.value = true; // Show loader
-    try {
-        const response = await axios.post(API.REFRESH_SHIPPER_INFO, {
-            applicant_id: applicantId,
-        });
-
-        // Update the selectedRowData dynamically
-        selectedRowData.value.credit_engine_data.shipper_info = response.data.data.data;
-
-        showMessageAlert({ message: 'Shipper Info Refreshed Successfully', type: 'success' });
-    } catch (error) {
-        showMessageAlert({ message: error.response?.data?.error || 'Failed to refresh Shipper Info', type: 'error' });
-    } finally {
-        loadingRefresh.value = false; // Hide loader
-    }
-};
-
-const refreshShipperKYC = async (applicantId) => {
-    loadingRefresh.value = true; // Show loader
-    try {
-        const response = await axios.post(API.REFRESH_SHIPPER_KYC, {
-            applicant_id: applicantId,
-        });
-
-        // Update the selectedRowData dynamically
-        selectedRowData.value.credit_engine_data.shipper_kyc = response.data.data.data;
-
-        showMessageAlert({ message: 'Shipper kyc Refreshed Successfully', type: 'success' });
-    } catch (error) {
-        showMessageAlert({ message: error.response?.data?.error || 'Failed to refresh Shipper kyc', type: 'error' });
-    } finally {
-        loadingRefresh.value = false; // Hide loader
-    }
-};
-
-const refreshShipperPricing = async (applicantId) => {
-    loadingRefresh.value = true; // Show loader
-    try {
-        const response = await axios.post(API.REFRESH_SHIPPER_PRICING, {
-            applicant_id: applicantId,
-        });
-
-        // Update the selectedRowData dynamically
-        selectedRowData.value.credit_engine_data.shipper_pricing = response.data.data.data;
-
-        showMessageAlert({ message: 'Shipper pricing Refreshed Successfully', type: 'success' });
-    } catch (error) {
-        showMessageAlert({ message: error.response?.data?.error || 'Failed to refresh Shipper pricing', type: 'error' });
-    } finally {
-        loadingRefresh.value = false; // Hide loader
-    }
-};
 
 const formatFactor = (factor) => {
     return factor.replace(/^p_/, '') // Remove leading 'p_'
@@ -294,7 +216,7 @@ const handleUpdateApplicantStatus = async (row) => {
 
         const payload = {
             status: row.status === 1 ? 0 : 1,
-            wallet_id: row.wallet_id
+            id: row.id
         };
 
         await axios.patch(API.APPLICANTS_STATUS, payload);
@@ -585,20 +507,6 @@ onMounted(() => {
                                                             {{ selectedRowData.email }}
                                                         </dd>
                                                     </div>
-                                                    <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                                        <dt class="text-sm/6 font-medium text-gray-900">Wallet ID
-                                                        </dt>
-                                                        <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                            {{ selectedRowData.wallet_id }}
-                                                        </dd>
-                                                    </div>
-                                                    <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                                        <dt class="text-sm/6 font-medium text-gray-900">Shipper ID
-                                                        </dt>
-                                                        <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                            {{ selectedRowData.shipper_id }}
-                                                        </dd>
-                                                    </div>
                                                 </dl>
                                             </div>
                                         </div>
@@ -719,256 +627,6 @@ onMounted(() => {
                                             <p v-else class="text-sm text-gray-500 mt-2">No UNSC Matches available.</p>
                                         </div>
                                     </div>
-
-
-                                    <!-- Shipper Credit Score Tab -->
-                                    <!-- Shipper Credit Score Tab -->
-                                    <div v-if="currentTab === 'Shipper Credit Score'">
-                                        <div class="flex items-center justify-between">
-                                            <!-- Title -->
-                                            <SectionHeader title="Shipper Credit Score Information"
-                                                description="Details about the shipper's credit score." />
-
-                                            <!-- Refresh Button and Loader -->
-                                            <div class="flex items-center space-x-2">
-                                                <button
-                                                    class="px-4 py-2 bg-[#75ba2c] text-white font-medium rounded shadow hover:bg-[#75ba2c] focus:outline-none"
-                                                    @click="refreshShipperCreditScore(selectedRowData.id)"
-                                                    :disabled="loadingRefresh">
-                                                    Refresh
-                                                </button>
-                                                <div class="relative w-5 h-5">
-                                                    <div v-if="loadingRefresh"
-                                                        class="absolute inset-0 loader spinner-border animate-spin border-2 border-gray-300 border-t-indigo-600 rounded-full">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Category with Color Background -->
-                                        <div class="mt-4 rounded-lg p-4 shadow-lg text-white text-center"
-                                            :style="{ backgroundColor: selectedRowData.credit_engine_data?.shipper_credit_score?.color_code || '#ccc' }">
-                                            <h3 class="text-xl font-semibold">
-                                                {{ selectedRowData.credit_engine_data?.shipper_credit_score?.category }}
-                                            </h3>
-                                        </div>
-
-                                        <!-- Credit Score -->
-                                        <div class="mt-4 border rounded-lg p-4 bg-gray-50 shadow">
-                                            <h3 class="text-base font-semibold text-gray-900">Credit Score</h3>
-                                            <p class="text-sm text-gray-900">
-                                                {{
-                                                    Math.ceil(selectedRowData.credit_engine_data?.shipper_credit_score?.credit_score
-                                                        * 100) / 100 }}
-                                            </p>
-                                        </div>
-
-                                        <!-- Description -->
-                                        <div class="mt-4 border rounded-lg p-4 bg-gray-50 shadow">
-                                            <h3 class="text-base font-semibold text-gray-900">Description</h3>
-                                            <p class="text-sm text-gray-900">
-                                                {{ selectedRowData.credit_engine_data?.shipper_credit_score?.description
-                                                }}
-                                            </p>
-                                        </div>
-
-                                        <!-- Strong Factors -->
-                                        <div class="mt-4 border rounded-lg p-4 bg-green-50 shadow">
-                                            <h3 class="text-base font-semibold text-green-700">Strong Factors</h3>
-                                            <p class="text-sm text-green-900">
-                                                {{
-                                                    selectedRowData.credit_engine_data?.shipper_credit_score?.factors_impacting_score?.strong_factors
-                                                }}
-                                            </p>
-                                        </div>
-
-                                        <!-- Weak Factors -->
-                                        <div class="mt-4 border rounded-lg p-4 bg-red-50 shadow">
-                                            <h3 class="text-base font-semibold text-red-700">Weak Factors</h3>
-                                            <p class="text-sm text-red-900">
-                                                {{
-                                                    selectedRowData.credit_engine_data?.shipper_credit_score?.factors_impacting_score?.weak_factors
-                                                }}
-                                            </p>
-                                        </div>
-
-                                        <!-- Improvement Tips -->
-                                        <div class="mt-4 border rounded-lg p-4 bg-blue-50 shadow">
-                                            <h3 class="text-base font-semibold text-blue-700">Improvement Tips</h3>
-                                            <ul class="list-disc list-inside text-sm text-blue-900">
-                                                <li v-for="(tip, index) in selectedRowData.credit_engine_data?.shipper_credit_score?.improvement_tips"
-                                                    :key="index">
-                                                    {{ tip }}
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-
-
-
-                                    <!-- Shipper Info Tab -->
-                                    <div v-if="currentTab === 'Shipper Info'">
-                                        <div class="flex items-center justify-between">
-                                            <!-- Title -->
-                                            <SectionHeader title="Shipper Information"
-                                                description="Details about the shipper." />
-
-                                            <!-- Refresh Button and Loader -->
-                                            <div class="flex items-center space-x-2">
-                                                <button
-                                                    class="px-4 py-2 bg-[#75ba2c] text-white font-medium rounded shadow hover:bg-[#75ba2c] focus:outline-none"
-                                                    @click="refreshShipperInfo(selectedRowData.id)"
-                                                    :disabled="loadingRefresh">
-                                                    Refresh
-                                                </button>
-                                                <!-- Loader Placeholder -->
-                                                <div class="relative w-5 h-5">
-                                                    <div v-if="loadingRefresh"
-                                                        class="absolute inset-0 loader spinner-border animate-spin border-2 border-gray-300 border-t-indigo-600 rounded-full">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Shipper Info Details -->
-                                        <div class="mt-4 border rounded-lg p-4 bg-gray-50 shadow">
-                                            <h3 class="text-base font-semibold text-gray-900">Shipper Information</h3>
-                                            <div v-if="selectedRowData.credit_engine_data.shipper_info">
-                                                <div v-for="(value, key) in selectedRowData.credit_engine_data.shipper_info"
-                                                    :key="key"
-                                                    class="grid grid-cols-2 gap-4 py-2 border-b border-gray-200">
-                                                    <div class="font-medium text-sm text-gray-600 capitalize">{{
-                                                        key.replace(/_/g, ' ') }}</div>
-                                                    <div class="text-sm text-gray-900">{{ value }}</div>
-                                                </div>
-                                            </div>
-                                            <div v-else class="text-sm text-gray-500">No Shipper Information available.
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <div v-if="currentTab === 'Shipper KYC'">
-
-
-                                        <div class="flex items-center justify-between">
-                                            <!-- Title -->
-                                            <SectionHeader title="Shipper KYC Information"
-                                                description="Details about the Shipper KYC." />
-
-                                            <!-- Refresh Button and Loader -->
-                                            <div class="flex items-center space-x-2">
-                                                <button
-                                                    class="px-4 py-2 bg-[#75ba2c] text-white font-medium rounded shadow hover:bg-[#75ba2c] focus:outline-none"
-                                                    @click="refreshShipperKYC(selectedRowData.id)"
-                                                    :disabled="loadingRefresh">
-                                                    Refresh
-                                                </button>
-                                                <!-- Loader Placeholder -->
-                                                <div class="relative w-5 h-5">
-                                                    <div v-if="loadingRefresh"
-                                                        class="absolute inset-0 loader spinner-border animate-spin border-2 border-gray-300 border-t-indigo-600 rounded-full">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Bureau Level Checks -->
-                                        <div class="mt-4 border rounded-lg p-4 bg-gray-50 shadow">
-                                            <h3 class="text-base font-semibold text-gray-900">Bureau Level Checks</h3>
-                                            <ul
-                                                v-if="selectedRowData.credit_engine_data.shipper_kyc?.bureau_level_checks && selectedRowData.credit_engine_data.shipper_kyc.bureau_level_checks.length > 0">
-                                                <li v-for="(check, index) in selectedRowData.credit_engine_data.shipper_kyc.bureau_level_checks"
-                                                    :key="index" class="py-2 border-b border-gray-200">
-                                                    <span class="font-medium text-sm text-gray-600">{{ check }}</span>
-                                                </li>
-                                            </ul>
-                                            <div v-else class="text-sm text-gray-500">No Bureau Level Checks available.
-                                            </div>
-                                        </div>
-
-                                        <!-- Personal Info -->
-                                        <div class="mt-4 border rounded-lg p-4 bg-gray-50 shadow">
-                                            <h3 class="text-base font-semibold text-gray-900">Personal Info</h3>
-                                            <ul
-                                                v-if="selectedRowData.credit_engine_data.shipper_kyc?.personal_info && selectedRowData.credit_engine_data.shipper_kyc.personal_info.length > 0">
-                                                <li v-for="(info, index) in selectedRowData.credit_engine_data.shipper_kyc.personal_info"
-                                                    :key="index" class="py-2 border-b border-gray-200">
-                                                    <span class="font-medium text-sm text-gray-600">{{ info }}</span>
-                                                </li>
-                                            </ul>
-                                            <div v-else class="text-sm text-gray-500">No Personal Info available.</div>
-                                        </div>
-
-                                        <!-- Trax DB Logs -->
-                                        <div class="mt-4 border rounded-lg p-4 bg-gray-50 shadow">
-                                            <h3 class="text-base font-semibold text-gray-900">Trax DB Logs</h3>
-                                            <div v-if="selectedRowData.credit_engine_data.shipper_kyc?.trax_db_logs">
-                                                <div v-for="(value, key) in selectedRowData.credit_engine_data.shipper_kyc.trax_db_logs"
-                                                    :key="key"
-                                                    class="grid grid-cols-2 gap-4 py-2 border-b border-gray-200">
-                                                    <div class="font-medium text-sm text-gray-600 capitalize">{{
-                                                        key.replace(/_/g, ' ') }}</div>
-                                                    <div class="text-sm text-gray-900">{{ value }}</div>
-                                                </div>
-                                            </div>
-                                            <div v-else class="text-sm text-gray-500">No Trax DB Logs available.</div>
-                                        </div>
-                                    </div>
-
-                                    <div v-if="currentTab === 'Shipper Pricing'">
-
-
-                                        <div class="flex items-center justify-between">
-                                            <!-- Title -->
-                                            <SectionHeader title="Shipper Pricing Information"
-                                                description="Details about the Shipper Pricing." />
-
-                                            <!-- Refresh Button and Loader -->
-                                            <div class="flex items-center space-x-2">
-                                                <button
-                                                    class="px-4 py-2 bg-[#75ba2c] text-white font-medium rounded shadow hover:bg-[#75ba2c] focus:outline-none"
-                                                    @click="refreshShipperPricing(selectedRowData.id)"
-                                                    :disabled="loadingRefresh">
-                                                    Refresh
-                                                </button>
-                                                <!-- Loader Placeholder -->
-                                                <div class="relative w-5 h-5">
-                                                    <div v-if="loadingRefresh"
-                                                        class="absolute inset-0 loader spinner-border animate-spin border-2 border-gray-300 border-t-indigo-600 rounded-full">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Loan Type -->
-                                        <div class="mt-4 border rounded-lg p-4 bg-gray-50 shadow">
-                                            <h3 class="text-base font-semibold text-gray-900">Loan Type</h3>
-                                            <div v-if="selectedRowData.credit_engine_data.shipper_pricing?.loan_type"
-                                                class="py-2">
-                                                <span class="text-sm text-gray-900">{{
-                                                    selectedRowData.credit_engine_data.shipper_pricing.loan_type
-                                                }}</span>
-                                            </div>
-                                            <div v-else class="text-sm text-gray-500">No Loan Type available.</div>
-                                        </div>
-
-                                        <!-- Prices -->
-                                        <div class="mt-4 border rounded-lg p-4 bg-gray-50 shadow">
-                                            <h3 class="text-base font-semibold text-gray-900">Prices</h3>
-                                            <div v-if="selectedRowData.credit_engine_data.shipper_pricing?.prices">
-                                                <div v-for="(value, key) in selectedRowData.credit_engine_data.shipper_pricing.prices"
-                                                    :key="key"
-                                                    class="grid grid-cols-2 gap-4 py-2 border-b border-gray-200">
-                                                    <div class="font-medium text-sm text-gray-600 capitalize">{{
-                                                        key.replace(/_/g, ' ') }}</div>
-                                                    <div class="text-sm text-gray-900">{{ value }}</div>
-                                                </div>
-                                            </div>
-                                            <div v-else class="text-sm text-gray-500">No Prices available.</div>
-                                        </div>
-                                    </div>
-
                                 </div>
                             </DialogPanel>
                         </TransitionChild>
