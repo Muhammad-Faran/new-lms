@@ -71,11 +71,11 @@ const selectedRowData = ref(null);
 const tabs = ref([
     { name: 'Applicant', current: true },
     // { name: 'Charges', current: false },
-    // { name: 'Transactions', current: false },
+    // { name: 'Applications', current: false },
 ]);
 
-const tabsTransactions = ref([
-    { name: 'Transactions', current: true },
+const tabsApplications = ref([
+    { name: 'Applications', current: true },
     { name: 'Charges', current: false },
     { name: 'Installments', current: false },
 ]);
@@ -86,10 +86,10 @@ const changeTab = (tabName) => {
     currentTab.value = tabName;
 };
 
-const currentTabTransactions = ref('Transactions');
+const currentTabApplications = ref('Applications');
 
-const changeTabTransactions = (tabName) => {
-    currentTabTransactions.value = tabName;
+const changeTabApplications = (tabName) => {
+    currentTabApplications.value = tabName;
 };
 
 
@@ -100,10 +100,10 @@ const fetchPrinterData = async ({ pageIndex = 0, pageSize = 10, search = '', fro
         const dropdownFilters = {};
 
         if (selectedStatus.value) {
-            dropdownFilters["transactions.status"] = selectedStatus.value;
+            dropdownFilters["applications.status"] = selectedStatus.value;
         }
         if (selectedProduct.value) {
-            dropdownFilters["transactions.product_id"] = selectedProduct.value;
+            dropdownFilters["applications.product_id"] = selectedProduct.value;
         }
         if (selectedDate.value) {
             dropdownFilters["due_date"] = selectedDate.value;
@@ -114,14 +114,14 @@ const fetchPrinterData = async ({ pageIndex = 0, pageSize = 10, search = '', fro
             page: pageIndex + 1, // Convert 0-based index to 1-based
             per_page: pageSize,
             search: search.trim(), // Trim whitespace from the search query
-            sort_field: "transactions.id",
+            sort_field: "applications.id",
             sort_order: "DESC",
             from_date: from_date, // Pass from_date
             to_date: to_date,     // Pass to_date
             dropdown_filters: JSON.stringify(dropdownFilters) // Convert to JSON string
         };
 
-        const response = await axios.get(API.TRANSACTIONS, { params });
+        const response = await axios.get(API.APPLICATIONS, { params });
 
         const { data, meta } = response.data;
 
@@ -141,15 +141,15 @@ const fetchPrinterData = async ({ pageIndex = 0, pageSize = 10, search = '', fro
 
 const tableRef = ref(null); // Reference to the Table component
 
-const exportTransactions = async () => {
+const exportApplications = async () => {
     try {
         const dropdownFilters = {};
 
         if (selectedStatus.value) {
-            dropdownFilters["transactions.status"] = selectedStatus.value;
+            dropdownFilters["applications.status"] = selectedStatus.value;
         }
         if (selectedProduct.value) {
-            dropdownFilters["transactions.product_id"] = selectedProduct.value;
+            dropdownFilters["applications.product_id"] = selectedProduct.value;
         }
         if (selectedDate.value) {
             dropdownFilters["due_date"] = selectedDate.value;
@@ -162,7 +162,7 @@ const exportTransactions = async () => {
             dropdown_filters: JSON.stringify(dropdownFilters) // Convert to JSON string
         };
 
-        const response = await axios.get(API.EXPORT_TRANSACTIONS, {
+        const response = await axios.get(API.EXPORT_APPLICATIONS, {
             params,
             responseType: 'blob', // To handle file download
         });
@@ -171,12 +171,12 @@ const exportTransactions = async () => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', 'transactions.xlsx'); // File name
+        link.setAttribute('download', 'applications.xlsx'); // File name
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     } catch (error) {
-        console.error('Error exporting transactions:', error.response || error.message);
+        console.error('Error exporting applications:', error.response || error.message);
     }
 };
 
@@ -251,8 +251,8 @@ onMounted(() => {
         <div>
             <div class="sm:flex sm:items-center justify-between">
                 <div>
-                    <h1 class="text-base font-semibold text-gray-900">Transactions</h1>
-                    <p class="mt-2 text-sm text-gray-700">A list of all transactions and Applicants information.</p>
+                    <h1 class="text-base font-semibold text-gray-900">Applications</h1>
+                    <p class="mt-2 text-sm text-gray-700">A list of all applications and Applicants information.</p>
                 </div>
 
                 <div class="flex items-center space-x-2">
@@ -283,7 +283,7 @@ onMounted(() => {
                         class="block w-36 rounded-md border-gray-300 py-1.5 shadow-sm focus:ring-2 focus:ring-indigo-500 sm:text-sm" />
 
                     <!-- Export Button -->
-                    <button @click="exportTransactions"
+                    <button @click="exportApplications"
                         class="px-4 py-2 text-xs font-medium text-white bg-slate-900 rounded hover:bg-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-400">
                         Export
                     </button>
@@ -293,7 +293,7 @@ onMounted(() => {
 
             <Table :columns="columns" :data="printerData" :fetchData="fetchPrinterData" :loading="loading"
                 :pageCount="pageCount" :recordCount="recordCount" :action="['Edit']" :actionOnClick="handleAction"
-                :showFilters="true" :onEdit="handleEdit" pageType="transactions" :exportFilter="getExportValues"
+                :showFilters="true" :onEdit="handleEdit" pageType="applications" :exportFilter="getExportValues"
                 :isReFetch="isReFetch">
 
                 <template #name="{ value }">
@@ -612,11 +612,11 @@ onMounted(() => {
                                         </p>
                                     </div>
                                 </div>
-                                <div v-if="currentTab === 'Transactions'">
+                                <div v-if="currentTab === 'Applications'">
                                     <div class="px-4 sm:px-0">
-                                        <h3 class="text-base/7 font-semibold text-gray-900">Transaction History</h3>
+                                        <h3 class="text-base/7 font-semibold text-gray-900">Application History</h3>
                                         <p class="mt-1 max-w-2xl text-sm/6 text-gray-500">Details about the
-                                            transactions.</p>
+                                            applications.</p>
                                     </div>
                                 </div>
                             </div>
@@ -668,8 +668,8 @@ onMounted(() => {
                                 <div class="grid grid-cols-1 sm:hidden">
                                     <select aria-label="Select a tab"
                                         class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-2 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
-                                        v-model="currentTabTransactions">
-                                        <option v-for="tab in tabsTransactions" :key="tab.name" :value="tab.name">
+                                        v-model="currentTabApplications">
+                                        <option v-for="tab in tabsApplications" :key="tab.name" :value="tab.name">
                                             {{ tab.name }}
                                         </option>
                                     </select>
@@ -680,10 +680,10 @@ onMounted(() => {
 
                                 <div class="hidden sm:block">
                                     <nav class="flex space-x-4" aria-label="Tabs">
-                                        <a v-for="tab in tabsTransactions" :key="tab.name" href="#"
-                                            @click.prevent="changeTabTransactions(tab.name)"
-                                            :class="[tab.name === currentTabTransactions ? 'bg-indigo-100 text-indigo-700' : 'text-gray-500 hover:text-gray-700', 'rounded-md px-3 py-2 text-sm font-medium']"
-                                            :aria-current="tab.name === currentTabTransactions ? 'page' : undefined">
+                                        <a v-for="tab in tabsApplications" :key="tab.name" href="#"
+                                            @click.prevent="changeTabApplications(tab.name)"
+                                            :class="[tab.name === currentTabApplications ? 'bg-indigo-100 text-indigo-700' : 'text-gray-500 hover:text-gray-700', 'rounded-md px-3 py-2 text-sm font-medium']"
+                                            :aria-current="tab.name === currentTabApplications ? 'page' : undefined">
                                             {{ tab.name }}
                                         </a>
                                     </nav>
@@ -691,11 +691,11 @@ onMounted(() => {
                             </div>
 
                             <div class="pt-4">
-                                <div v-if="currentTabTransactions === 'Transactions'">
+                                <div v-if="currentTabApplications === 'Applications'">
                                     <div class="px-4 sm:px-0">
-                                        <h3 class="text-base/7 font-semibold text-gray-900">Transaction History</h3>
+                                        <h3 class="text-base/7 font-semibold text-gray-900">Application History</h3>
                                         <p class="mt-1 max-w-2xl text-sm/6 text-gray-500">
-                                            Details about the transactions.
+                                            Details about the applications.
                                         </p>
                                         <div v-if="selectedRowData" class="mt-6 border-t border-gray-100">
                                             <dl class="divide-y divide-gray-100">
@@ -784,7 +784,7 @@ onMounted(() => {
                                         </div>
                                     </div>
                                 </div>
-                                <div v-if="currentTabTransactions === 'Installments'">
+                                <div v-if="currentTabApplications === 'Installments'">
                                     <div class="px-4 sm:px-0">
                                         <div class="px-4 sm:px-0">
                                             <h3 class="text-base/7 font-semibold text-gray-900">Installments Information
@@ -853,7 +853,7 @@ onMounted(() => {
                                         </div>
                                     </div>
                                 </div>
-                                <div v-if="currentTabTransactions === 'Charges'">
+                                <div v-if="currentTabApplications === 'Charges'">
                                     <div class="px-4 sm:px-0">
                                         <h3 class="text-base/7 font-semibold text-gray-900">Charges Information</h3>
                                         <p class="mt-1 max-w-2xl text-sm/6 text-gray-500">Details about the charges.

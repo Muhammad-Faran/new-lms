@@ -37,7 +37,7 @@ const fetchProductsData = async () => {
     productData.value = [...data]
 
   } catch (error) {
-    console.error('Error exporting transactions:', error.response || error.message);
+    console.error('Error exporting applications:', error.response || error.message);
   }
 };
 
@@ -52,7 +52,7 @@ const fetchShipperNamesData = async () => {
     shipperData.value = [...shipper_names.map((item, index) => ({ id: index + 1, name: item }))]
 
   } catch (error) {
-    console.error('Error exporting transactions:', error.response || error.message);
+    console.error('Error exporting applications:', error.response || error.message);
   }
 };
 
@@ -92,7 +92,7 @@ const exportDashboardStats = async () => {
     ];
 
   } catch (error) {
-    console.error('Error exporting transactions:', error.response || error.message);
+    console.error('Error exporting applications:', error.response || error.message);
   } finally {
     loading.value = false
   }

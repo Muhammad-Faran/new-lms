@@ -21,9 +21,9 @@ const router = useRouter();
 const columns = [
     { Header: 'Id', accessor: 'id' },
     { Header: 'Applicant', accessor: 'applicant', slotName: "applicant" },
-    { Header: 'Product Name', accessor: 'transaction', slotName: "productName" },
+    { Header: 'Product Name', accessor: 'application', slotName: "productName" },
     { Header: 'Shipper', accessor: 'applicant', slotName: "shipperName" },
-    { Header: 'Order Number', accessor: 'transaction', slotName: "orderNumber" },
+    { Header: 'Order Number', accessor: 'application', slotName: "orderNumber" },
     { Header: 'Amount', accessor: 'amount' },
     { Header: 'Paid at', accessor: 'paid_at', slotName: "paidAt" },
     { Header: 'Create Date', accessor: 'created_at', slotName: "showDate" },
@@ -54,11 +54,11 @@ const resetFilters = () => {
 const tabs = ref([
     { name: 'Applicant', current: true },
     // { name: 'Charges', current: false },
-    // { name: 'Transactions', current: false },
+    // { name: 'Applications', current: false },
 ]);
 
-const tabsTransactions = ref([
-    { name: 'Transactions', current: true },
+const tabsApplications = ref([
+    { name: 'Applications', current: true },
     // { name: 'Charges', current: false },
     { name: 'Installments', current: false },
 ]);
@@ -69,10 +69,10 @@ const changeTab = (tabName) => {
     currentTab.value = tabName;
 };
 
-const currentTabTransactions = ref('Transactions');
+const currentTabApplications = ref('Applications');
 
-const changeTabTransactions = (tabName) => {
-    currentTabTransactions.value = tabName;
+const changeTabApplications = (tabName) => {
+    currentTabApplications.value = tabName;
 };
 
 const fetchPrinterData = async ({ pageIndex = 0, pageSize = 10, search = '', from_date = null, to_date = null }) => {
@@ -81,13 +81,13 @@ const fetchPrinterData = async ({ pageIndex = 0, pageSize = 10, search = '', fro
     try {
         const dropdownFilters = {};
         if (selectedProduct.value) {
-            dropdownFilters["transaction.product_id"] = selectedProduct.value;
+            dropdownFilters["application.product_id"] = selectedProduct.value;
         }
 
         // Construct search_table dynamically
         const searchTable = [];
         if (search) {
-            searchTable.push({ key: "transaction.order_number", value: search });
+            searchTable.push({ key: "application.order_number", value: search });
         }
 
         const params = {
@@ -168,13 +168,13 @@ const exportRepayment = async () => {
 
         const dropdownFilters = {};
         if (selectedProduct.value) {
-            dropdownFilters["transaction.product_id"] = selectedProduct.value;
+            dropdownFilters["application.product_id"] = selectedProduct.value;
         }
 
         // Construct search_table dynamically
         const searchTable = [];
         if (tableRef.value?.searchQuery) {
-            searchTable.push({ key: "transaction.order_number", value: tableRef.value?.searchQuery });
+            searchTable.push({ key: "application.order_number", value: tableRef.value?.searchQuery });
         }
 
         const params = {
@@ -227,7 +227,7 @@ const getProductData = async () => {
     }
 };
 
-const handleUpdateTransactionStatus = async (row) => {
+const handleUpdateApplicationStatus = async (row) => {
     // try {
     //     loading.value = true;
 
@@ -308,13 +308,13 @@ onMounted(() => {
 
                 <template #orderNumber="{ value }">
                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                        {{ value.transaction.order_number }}
+                        {{ value.application.order_number }}
                     </dd>
                 </template>
 
                 <template #productName="{ value }">
                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                        {{ value.transaction.product }}
+                        {{ value.application.product }}
                     </dd>
                 </template>
 
@@ -370,7 +370,7 @@ onMounted(() => {
                                     <button :class="[
                                         active ? 'bg-violet-500 text-white' : 'text-gray-900',
                                         'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                                    ]" @click="handleUpdateTransactionStatus(value)">
+                                    ]" @click="handleUpdateApplicationStatus(value)">
 
                                         {{ value.status === 1 ? "Disable" : "Enable" }}
                                     </button>
@@ -546,11 +546,11 @@ onMounted(() => {
                                         </p>
                                     </div>
                                 </div>
-                                <div v-if="currentTab === 'Transactions'">
+                                <div v-if="currentTab === 'Applications'">
                                     <div class="px-4 sm:px-0">
-                                        <h3 class="text-base/7 font-semibold text-gray-900">Transaction History</h3>
+                                        <h3 class="text-base/7 font-semibold text-gray-900">Application History</h3>
                                         <p class="mt-1 max-w-2xl text-sm/6 text-gray-500">Details about the
-                                            transactions.</p>
+                                            applications.</p>
                                     </div>
                                 </div>
                             </div>
@@ -602,8 +602,8 @@ onMounted(() => {
                                 <div class="grid grid-cols-1 sm:hidden">
                                     <select aria-label="Select a tab"
                                         class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-2 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
-                                        v-model="currentTabTransactions">
-                                        <option v-for="tab in tabsTransactions" :key="tab.name" :value="tab.name">
+                                        v-model="currentTabApplications">
+                                        <option v-for="tab in tabsApplications" :key="tab.name" :value="tab.name">
                                             {{ tab.name }}
                                         </option>
                                     </select>
@@ -614,10 +614,10 @@ onMounted(() => {
 
                                 <div class="hidden sm:block">
                                     <nav class="flex space-x-4" aria-label="Tabs">
-                                        <a v-for="tab in tabsTransactions" :key="tab.name" href="#"
-                                            @click.prevent="changeTabTransactions(tab.name)"
-                                            :class="[tab.name === currentTabTransactions ? 'bg-indigo-100 text-indigo-700' : 'text-gray-500 hover:text-gray-700', 'rounded-md px-3 py-2 text-sm font-medium']"
-                                            :aria-current="tab.name === currentTabTransactions ? 'page' : undefined">
+                                        <a v-for="tab in tabsApplications" :key="tab.name" href="#"
+                                            @click.prevent="changeTabApplications(tab.name)"
+                                            :class="[tab.name === currentTabApplications ? 'bg-indigo-100 text-indigo-700' : 'text-gray-500 hover:text-gray-700', 'rounded-md px-3 py-2 text-sm font-medium']"
+                                            :aria-current="tab.name === currentTabApplications ? 'page' : undefined">
                                             {{ tab.name }}
                                         </a>
                                     </nav>
@@ -625,11 +625,11 @@ onMounted(() => {
                             </div>
 
                             <div class="pt-4">
-                                <div v-if="currentTabTransactions === 'Transactions'">
+                                <div v-if="currentTabApplications === 'Applications'">
                                     <div class="px-4 sm:px-0">
-                                        <h3 class="text-base/7 font-semibold text-gray-900">Transaction History</h3>
+                                        <h3 class="text-base/7 font-semibold text-gray-900">Application History</h3>
                                         <p class="mt-1 max-w-2xl text-sm/6 text-gray-500">
-                                            Details about the transactions.
+                                            Details about the applications.
                                         </p>
                                         <div v-if="selectedRowData" class="mt-6 border-t border-gray-100">
                                             <dl class="divide-y divide-gray-100">
@@ -638,7 +638,7 @@ onMounted(() => {
                                                         Product name
                                                     </dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.transaction.product }}
+                                                        {{ selectedRowData.application.product }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -646,7 +646,7 @@ onMounted(() => {
                                                         Product code
                                                     </dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.transaction.product_code }}
+                                                        {{ selectedRowData.application.product_code }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -654,11 +654,11 @@ onMounted(() => {
                                                         Product plan
                                                     </dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.transaction.product_plan }}
+                                                        {{ selectedRowData.application.product_plan }}
                                                         {{ "(" }}
-                                                        {{ selectedRowData.transaction.product_plan_duration }}
+                                                        {{ selectedRowData.application.product_plan_duration }}
                                                         {{ "-" }}
-                                                        {{ selectedRowData.transaction.product_plan_duration_unit }}
+                                                        {{ selectedRowData.application.product_plan_duration_unit }}
                                                         {{ ")" }}
                                                     </dd>
                                                 </div>
@@ -667,38 +667,38 @@ onMounted(() => {
                                                         Disbursed Amount
                                                     </dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.transaction.disbursed_amount }}
+                                                        {{ selectedRowData.application.disbursed_amount }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Loan Amount</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.transaction.loan_amount }}
+                                                        {{ selectedRowData.application.loan_amount }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Outstanding Amount
                                                     </dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.transaction.outstanding_amount }}
+                                                        {{ selectedRowData.application.outstanding_amount }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Total Charges</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.transaction.total_charges }}
+                                                        {{ selectedRowData.application.total_charges }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Status</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
                                                         <span :class="[
-                                                            selectedRowData.transaction.status === 'disbursed' ? 'bg-green-100 text-green-800 border-green-300' :
-                                                                selectedRowData.transaction.status === 'completed' ? 'bg-purple-100 text-black border-purple-300' :
+                                                            selectedRowData.application.status === 'disbursed' ? 'bg-green-100 text-green-800 border-green-300' :
+                                                                selectedRowData.application.status === 'completed' ? 'bg-purple-100 text-black border-purple-300' :
                                                                     'bg-red-100 text-red-800 border-red-300',
                                                             'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border'
                                                         ]">
-                                                            {{ selectedRowData.transaction.status }}
+                                                            {{ selectedRowData.application.status }}
                                                         </span>
                                                     </dd>
                                                 </div>
@@ -706,7 +706,7 @@ onMounted(() => {
                                         </div>
                                     </div>
                                 </div>
-                                <div v-if="currentTabTransactions === 'Installments'">
+                                <div v-if="currentTabApplications === 'Installments'">
                                     <div class="px-4 sm:px-0">
                                         <div class="px-4 sm:px-0">
                                             <h3 class="text-base/7 font-semibold text-gray-900">Installments Information
@@ -771,7 +771,7 @@ onMounted(() => {
                                         </div>
                                     </div>
                                 </div>
-                                <div v-if="currentTabTransactions === 'Charges'">
+                                <div v-if="currentTabApplications === 'Charges'">
                                     <div class="px-4 sm:px-0">
                                         <h3 class="text-base/7 font-semibold text-gray-900">Charges Information</h3>
                                         <p class="mt-1 max-w-2xl text-sm/6 text-gray-500">Details about the charges.

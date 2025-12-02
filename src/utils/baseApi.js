@@ -19,14 +19,14 @@ const API = {
     APPLICANTS_ASSIGN_CREDIT_LIMIT: BASE_URL + '/api/v1/applicants/{applicant}/assignCreditLimit',
     APPLICANTS_ASSIGN_FINANCING_POLICY: BASE_URL + '/api/v1/applicants/{applicant}/assignFinancingPolicy',
     ADDAPPLICANTS: BASE_URL + '/api/v1/addApplicant/',
-    TRANSACTIONS: BASE_URL + '/api/v1/transactions',
+    APPLICATIONS: BASE_URL + '/api/v1/applications',
     REPAYMENTS: BASE_URL + '/api/v1/repayments',
     REFRESH_OFAC_NACTA: BASE_URL + '/api/v1/refreshOfacNacta',
-    EXPORT_TRANSACTIONS: BASE_URL + '/api/v1/transaction/export',
+    EXPORT_APPLICATIONS: BASE_URL + '/api/v1/application/export',
     EXPORT_REPAYMENTS: BASE_URL + '/api/v1/repayment/export',
     DASHBOARD_STATS: BASE_URL + '/api/v1/dashboard/stats',
     OVERDUE_LOANS: BASE_URL + '/api/v1/reports/overdue-loans',
-    EXPORT_DELINQUENT_TRANSACTIONS: BASE_URL + '/api/v1/reports/export-overdue-loans',
+    EXPORT_DELINQUENT_APPLICATIONS: BASE_URL + '/api/v1/reports/export-overdue-loans',
 
 }
 

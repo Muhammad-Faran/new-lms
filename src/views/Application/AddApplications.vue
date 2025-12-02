@@ -93,7 +93,7 @@ const handleApply = () => {
 <template>
     <div class="">
         <div class="rounded-2xl p-6 shadow-xl shadow-black/50">
-            <h2 class="text-lg font-semibold text-black">Add Transaction</h2>
+            <h2 class="text-lg font-semibold text-black">Add Application</h2>
             <p class="text-sm text-black">Select an applicant, review credit, then choose a product.</p>
 
             <div class="mt-6 space-y-6">

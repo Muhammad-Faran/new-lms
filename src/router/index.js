@@ -22,10 +22,10 @@ import SyncApplicantProducts from '../views/Applicant/SyncApplicantProducts.vue'
 import AssignFinancingPolicy from '../views/Applicant/AssignFinancingPolicy.vue';
 import ChangePassword from '../views/ChangePassword.vue';
 import AssignCreditLimit from '../views/Applicant/AssignCreditLimit.vue';
-import Transactions from '../views/Transaction/Transactions.vue';
-import Repayments from '../views/Transaction/Repayments.vue';
+import Applications from '../views/Application/Applications.vue';
+import Repayments from '../views/Application/Repayments.vue';
 import ConfigureApplicantDetails from '../views/Applicant/ConfigureApplicantDetails.vue';
-import AddTransactions from '../views/Transaction/AddTransactions.vue';
+import AddApplications from '../views/Application/AddApplications.vue';
 
 const routes = [
   {
@@ -122,8 +122,8 @@ const routes = [
         meta: { requiresAuth: true, permissions: ['view-books'] },
       },
       {
-        path: 'delinquentTransactions',
-        name: 'delinquentTransactions',
+        path: 'delinquentApplications',
+        name: 'delinquentApplications',
         component: overdueLoans,
         props: true,
         meta: { requiresAuth: true, permissions: ['view-reports'] },
@@ -241,16 +241,16 @@ const routes = [
         meta: { requiresAuth: true, permissions: ['update-applicants'] },
       },
       {
-        path: 'transactions',
-        name: 'Transactions',
-        component: Transactions,
+        path: 'applications',
+        name: 'Applications',
+        component: Applications,
         props: true,
-        meta: { requiresAuth: true, permissions: ['view-transactions'] },
+        meta: { requiresAuth: true, permissions: ['view-applications'] },
       },
       {
-        path: 'transactions/add',
-        name: 'AddTransactions',
-        component: AddTransactions,
+        path: 'applications/add',
+        name: 'AddApplications',
+        component: AddApplications,
         props: true,
         meta: { requiresAuth: false, permissions: [] },
       },

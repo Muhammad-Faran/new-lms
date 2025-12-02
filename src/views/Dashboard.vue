@@ -349,7 +349,7 @@ const navigation = ref(
             ]
         },
         {
-            name: 'Transaction',
+            name: 'Loan Applications',
             href: '#',
             icon: ArrowsRightLeftIcon,
             isExpandable: true,
@@ -358,18 +358,18 @@ const navigation = ref(
             permissions: [],
             children: [
                 {
-                    name: 'Add Transactions',
-                    href: '/dashboard/transactions/add',
+                    name: 'Add Loan Application',
+                    href: '/dashboard/applications/add',
                     icon: ReceiptPercentIcon,
                     current: false,
                     permissions: []
                 },
                 {
-                    name: 'Transactions',
-                    href: '/dashboard/transactions',
+                    name: 'Loan Applications',
+                    href: '/dashboard/applications',
                     icon: ReceiptPercentIcon,
                     current: false,
-                    permissions: ['view-transactions']
+                    permissions: ['view-applications']
                 },
                 {
                     name: 'Repayments',
@@ -429,8 +429,8 @@ const navigation = ref(
             permissions: [],
             children: [
                 {
-                    name: 'Delinquent Transactions',
-                    href: '/dashboard/delinquentTransactions',
+                    name: 'Delinquent Applications',
+                    href: '/dashboard/delinquentApplications',
                     icon: ExclamationTriangleIcon,
                     current: false,
                     permissions: ['view-reports']
