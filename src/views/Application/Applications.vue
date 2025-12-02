@@ -129,6 +129,8 @@ const fetchPrinterData = async ({ pageIndex = 0, pageSize = 10, search = '', fro
             printerData.value = data;
             pageCount.value = data.length || 0;
             recordCount.value = meta?.total || 0;
+
+            loading.value = false
         } else {
             console.warn('No data found in API response:', response.data);
         }
@@ -311,13 +313,13 @@ onMounted(() => {
                 <template #Applicant="{ value }">
                     <span @click="handleShowModal(value)"
                         :class="['cursor-pointer inline-flex items-center gap-x-1.5 rounded-md px-3 py-1 text-xs font-semibold text-blue-400 hover:text-blue-600']">
-                        {{ value.Applicant.first_name }} {{ ' ' }} {{ value.Applicant.last_name }}
+                        {{ value.applicant.first_name }} {{ ' ' }} {{ value.applicant.last_name }}
                     </span>
                 </template>
 
                 <template #shipperName="{ value }">
                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                        {{ value.Applicant.shipper_name }}
+                        {{ value.applicant.shipper_name }}
                     </dd>
                 </template>
 
@@ -457,44 +459,44 @@ onMounted(() => {
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Full name</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.first_name }}
+                                                        {{ selectedRowData.applicant.first_name }}
                                                         {{ ' ' }}
-                                                        {{ selectedRowData.Applicant.last_name }}
+                                                        {{ selectedRowData.applicant.last_name }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Father name</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.father_name }}
+                                                        {{ selectedRowData.applicant.father_name }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Mother name</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.mother_name }}
+                                                        {{ selectedRowData.applicant.mother_name }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">CNIC</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.cnic }}
+                                                        {{ selectedRowData.applicant.cnic }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">CNIC Issuance Date
                                                     </dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.cnic_issuance_date }}
+                                                        {{ selectedRowData.applicant.cnic_issuance_date }}
                                                     </dd>
                                                 </div>
                                                 <!-- CNIC Front Image Preview -->
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm font-medium text-gray-900">CNIC Front Image</dt>
                                                     <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        <img :src="selectedRowData.Applicant.cnic_front_image"
+                                                        <img :src="selectedRowData.applicant.cnic_front_image"
                                                             alt="CNIC Front Image"
                                                             class="w-24 h-16 cursor-pointer rounded-lg shadow"
-                                                            @click="openImageModal(selectedRowData.Applicant.cnic_front_image)" />
+                                                            @click="openImageModal(selectedRowData.applicant.cnic_front_image)" />
                                                     </dd>
                                                 </div>
 
@@ -502,10 +504,10 @@ onMounted(() => {
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm font-medium text-gray-900">CNIC Back Image</dt>
                                                     <dd class="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        <img :src="selectedRowData.Applicant.cnic_back_image"
+                                                        <img :src="selectedRowData.applicant.cnic_back_image"
                                                             alt="CNIC Back Image"
                                                             class="w-24 h-16 cursor-pointer rounded-lg shadow"
-                                                            @click="openImageModal(selectedRowData.Applicant.cnic_back_image)" />
+                                                            @click="openImageModal(selectedRowData.applicant.cnic_back_image)" />
                                                     </dd>
                                                 </div>
 
@@ -526,53 +528,53 @@ onMounted(() => {
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Mobile Number</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.mobile_no }}
+                                                        {{ selectedRowData.applicant.mobile_no }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Email address</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.email }}
+                                                        {{ selectedRowData.applicant.email }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Date of birth</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.dob }}
+                                                        {{ selectedRowData.applicant.dob }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Wallet ID</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.wallet_id }}
+                                                        {{ selectedRowData.applicant.wallet_id }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Shipper ID</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.shipper_id }}
+                                                        {{ selectedRowData.applicant.shipper_id }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Address</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.address }}
+                                                        {{ selectedRowData.applicant.address }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">City</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.city }}
+                                                        {{ selectedRowData.applicant.city }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Status</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
                                                         <span :class="[
-                                                            selectedRowData.Applicant.status === 1 ? 'bg-green-100 text-green-800 border-green-300' : 'bg-red-100 text-red-800 border-red-300',
+                                                            selectedRowData.applicant.status === 1 ? 'bg-green-100 text-green-800 border-green-300' : 'bg-red-100 text-red-800 border-red-300',
                                                             'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border'
                                                         ]">
-                                                            {{ selectedRowData.Applicant.status === 1 ? 'Active' :
+                                                            {{ selectedRowData.applicant.status === 1 ? 'Active' :
                                                                 'Inactive'
                                                             }}
                                                         </span>
@@ -704,9 +706,9 @@ onMounted(() => {
                                                         Applicant name
                                                     </dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.first_name }}
+                                                        {{ selectedRowData.applicant.first_name }}
                                                         {{ ' ' }}
-                                                        {{ selectedRowData.Applicant.last_name }}
+                                                        {{ selectedRowData.applicant.last_name }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">

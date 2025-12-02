@@ -50,7 +50,7 @@
                             </label>
                             <div class="mt-2.5">
                                 <select id="product_tier" v-model="loanPlanFormData.product_tier"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300">
+                                    class="w-full px-4 py-2 border border-gray-300 rounded text-black focus:outline-none focus:ring focus:ring-blue-300">
                                     <option value="" disabled>Select a loan tier</option>
                                     <option v-for="(item, index) in totalLoanTiers" :key="item.id" :value="item">
                                         {{ item.name }}
@@ -78,7 +78,7 @@
                 </div>
                 <div class="mt-8 flex justify-end">
                     <button type="button" @click="handleAddLoanPlan"
-                        class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        class="rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900">
                         Add Plan
                     </button>
                 </div>
@@ -120,7 +120,7 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200">
-                                <tr v-for="(loanPlan, index)  in totalLoanPlanData" :key="totalLoanPlanData.id">
+                                <tr v-for="(loanPlan, index) in totalLoanPlanData" :key="totalLoanPlanData.id">
                                     <td
                                         class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                                         {{ loanPlan.name }}</td>
@@ -147,7 +147,7 @@
 
         <div class="mt-8 flex justify-end">
             <button type="button" @click="emitHandleNext"
-                class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                class="rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900">
                 Preview
             </button>
         </div>

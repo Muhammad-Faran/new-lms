@@ -17,29 +17,34 @@
                         </div>
 
                         <!-- Order Threshold Field -->
-                            <div class="sm:col-span-2">
-                                <label for="order_threshold" class="block text-sm font-semibold text-gray-900">Order Threshold
-                                </label>
-                                <div class="mt-2.5">
-                                    <input type="number" id="order_threshold" v-model.number="loanTierFormData.order_threshold"
-                                        placeholder="Enter order threshold"
-                                        class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600" />
-                                    <p v-if="errors.order_threshold" class="text-sm text-red-500">{{ errors.order_threshold }}</p>
-                                </div>
+                        <div class="sm:col-span-2">
+                            <label for="order_threshold" class="block text-sm font-semibold text-gray-900">Order
+                                Threshold
+                            </label>
+                            <div class="mt-2.5">
+                                <input type="number" id="order_threshold"
+                                    v-model.number="loanTierFormData.order_threshold"
+                                    placeholder="Enter order threshold"
+                                    class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600" />
+                                <p v-if="errors.order_threshold" class="text-sm text-red-500">{{ errors.order_threshold
+                                    }}</p>
                             </div>
+                        </div>
 
-                            <!-- Fixed Threshold Charges Field -->
-                            <div class="sm:col-span-2">
-                                <label for="fixed_threshold_charges" class="block text-sm font-semibold text-gray-900">Fixed Threshold Charges
-                                </label>
-                                <div class="mt-2.5">
-                                    <input type="number" id="fixed_threshold_charges"
-                                        v-model.number="loanTierFormData.fixed_threshold_charges"
-                                        placeholder="Enter fixed threshold charges"
-                                        class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600" />
-                                    <p v-if="errors.fixed_threshold_charges" class="text-sm text-red-500">{{ errors.fixed_threshold_charges }}</p>
-                                </div>
+                        <!-- Fixed Threshold Charges Field -->
+                        <div class="sm:col-span-2">
+                            <label for="fixed_threshold_charges" class="block text-sm font-semibold text-gray-900">Fixed
+                                Threshold Charges
+                            </label>
+                            <div class="mt-2.5">
+                                <input type="number" id="fixed_threshold_charges"
+                                    v-model.number="loanTierFormData.fixed_threshold_charges"
+                                    placeholder="Enter fixed threshold charges"
+                                    class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600" />
+                                <p v-if="errors.fixed_threshold_charges" class="text-sm text-red-500">{{
+                                    errors.fixed_threshold_charges }}</p>
                             </div>
+                        </div>
 
 
                         <div class="sm:col-span-2">
@@ -132,7 +137,7 @@
                                 </label>
                                 <div class="mt-2.5">
                                     <select id="chargesDropdown" v-model="draftSelectedChargeTire.charge"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300">
+                                        class="w-full px-4 py-2 border border-gray-300 text-black rounded focus:outline-none focus:ring focus:ring-blue-300">
                                         <option value="" disabled>Select a charge</option>
                                         <option v-for="(item, index) in totalCharges" :key="item.charge_id"
                                             :value="item">
@@ -181,7 +186,7 @@
                                 </div>
                             </div>
                             <button type="button" @click="handleAddTierCharges"
-                                class="w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                class="w-full rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900">
                                 Add Charge
                             </button>
                         </div>
@@ -222,7 +227,7 @@
         </div>
         <div class="mt-8 flex justify-end">
             <button type="button" @click="handleAddLoadTier"
-                class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                class="rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900">
                 Add Product Tier
             </button>
         </div>
@@ -233,9 +238,10 @@
             <label class="p-2 block text-sm font-semibold text-gray-900">
                 Total Product Tier
             </label>
+
             <ul>
                 <li v-for="(option, index) in totalLoanTiers" :key="index"
-                    class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between items-center gap-2">
+                    class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-black flex justify-between items-center gap-2">
                     <span>
                         {{ index + 1 }}.
                         {{ option.name }}
@@ -248,7 +254,7 @@
         </div>
         <div class="p-2 mt-4 flex justify-end">
             <button type="button" @click="emitHandleNext"
-                class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                class="rounded-md bg-slate-900 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900">
                 Next
             </button>
         </div>

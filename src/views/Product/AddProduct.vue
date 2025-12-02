@@ -18,23 +18,23 @@
             <div class="w-full">
                 <ul class="flex mb-0 list-none flex-wrap pt-3 pb-4 flex-row">
                     <li v-if="validateTabs.tab1" class="-mb-px mr-2 last:mr-0 flex-auto text-center">
-                        <a class="cursor-pointer text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal"
+                        <a class="cursor-pointer text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal text-gray-800"
                             v-on:click="toggleTabs(1)"
-                            v-bind:class="{ 'text-lightBlue-600 bg-white': openTab !== 1, 'text-white bg-gray-400': openTab === 1 }">
+                            v-bind:class="{ 'text-gray-700 bg-white': openTab !== 1, 'text-black bg-gray-400': openTab === 1 }">
                             Basic Information
                         </a>
                     </li>
                     <li v-if="validateTabs.tab2" class="-mb-px mr-2 last:mr-0 flex-auto text-center">
                         <a class="cursor-pointer text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal"
                             v-on:click="toggleTabs(2)"
-                            v-bind:class="{ 'text-lightBlue-600 bg-white': openTab !== 2, 'text-black bg-gray-400': openTab === 2 }">
+                            v-bind:class="{ 'text-gray-700 bg-white': openTab !== 2, 'text-black bg-gray-400': openTab === 2 }">
                             Product Tier
                         </a>
                     </li>
                     <li v-if="validateTabs.tab3" class="-mb-px mr-2 last:mr-0 flex-auto text-center">
                         <a class="cursor-pointer text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal"
                             v-on:click="toggleTabs(3)"
-                            v-bind:class="{ 'text-lightBlue-600 bg-white': openTab !== 3, 'text-white bg-gray-400': openTab === 3 }">
+                            v-bind:class="{ 'text-gray-700 bg-white': openTab !== 3, 'text-black bg-gray-400': openTab === 3 }">
                             Product Plan
                         </a>
                     </li>
@@ -292,7 +292,7 @@
                                                         </label>
                                                         <div class="mt-2.5">
                                                             <select id="chargesList" v-model="selectedCharge"
-                                                                class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300">
+                                                                class="w-full px-4 py-2 border border-gray-300 text-black rounded focus:outline-none focus:ring focus:ring-blue-300">
                                                                 <option value="" disabled>Select a charge</option>
                                                                 <option v-for="charge in chargesList" :key="charge.id"
                                                                     :value="charge">

@@ -27,7 +27,8 @@ const API = {
     DASHBOARD_STATS: BASE_URL + '/api/v1/dashboard/stats',
     OVERDUE_LOANS: BASE_URL + '/api/v1/reports/overdue-loans',
     EXPORT_DELINQUENT_APPLICATIONS: BASE_URL + '/api/v1/reports/export-overdue-loans',
-
+    APPLICATIONS_INITIATE: BASE_URL + '/api/v1/applications/initiate',
+    APPLICATIONS_CALCULATE: BASE_URL + '/api/v1/applications/calculate',
 }
 
 export default API;

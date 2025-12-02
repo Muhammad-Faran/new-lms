@@ -1,57 +1,34 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { Combobox, ComboboxInput, ComboboxOptions, ComboboxOption, ComboboxButton } from '@headlessui/vue';
 import { ChevronUpDownIcon, CheckIcon } from '@heroicons/vue/20/solid';
+import axios from 'axios';
 import { showMessageAlert } from '../../utils/alert';
+import API from '../../utils/baseApi';
 
-// Mock data for FE search
-const applicants = ref([
-    {
-        id: 1,
-        first_name: 'Ali',
-        last_name: 'Khan',
-        email: 'ali.khan@example.com',
-        mobile_no: '0300-1234567',
-        credit: { score: 740, category: 'Good', limit: 500000 },
-        products: [
-            { id: 'P1', name: 'Working Capital', code: 'WC-01' },
-            { id: 'P2', name: 'Invoice Financing', code: 'INV-02' },
-        ],
-    },
-    {
-        id: 2,
-        first_name: 'Sara',
-        last_name: 'Ahmed',
-        email: 'sara.ahmed@example.com',
-        mobile_no: '0301-7654321',
-        credit: { score: 680, category: 'Fair', limit: 300000 },
-        products: [
-            { id: 'P3', name: 'Short Term Loan', code: 'STL-03' },
-            { id: 'P4', name: 'Trade Finance', code: 'TF-04' },
-        ],
-    },
-    {
-        id: 3,
-        first_name: 'Umair',
-        last_name: 'Raza',
-        email: 'umair.raza@example.com',
-        mobile_no: '0302-4567890',
-        credit: { score: 820, category: 'Excellent', limit: 800000 },
-        products: [
-            { id: 'P5', name: 'Revolving Credit', code: 'RC-05' },
-            { id: 'P6', name: 'Bridge Loan', code: 'BL-06' },
-        ],
-    },
-]);
-
+const applicants = ref([]);
 const products = ref([]);
+const plans = ref([]);
 const applicantQuery = ref('');
 const productQuery = ref('');
+const planQuery = ref('');
+const amount = ref('');
 const selectedApplicant = ref(null);
 const selectedProduct = ref(null);
+const selectedPlan = ref(null);
 const creditScore = ref(null);
+const loadingApplicants = ref(false);
+const loadingApplicantDetail = ref(false);
+const isCalculating = ref(false);
+const isApplying = ref(false);
+const calculationResult = ref(null);
+const showCalculationModal = ref(false);
+let applicantSearchTimeout;
+const router = useRouter();
 
 const filteredApplicants = computed(() => {
+    if (!applicantQuery.value) return applicants.value;
     const q = applicantQuery.value.toLowerCase();
     return applicants.value.filter((a) =>
         [a.first_name, a.last_name, a.email, a.mobile_no].some((field) =>
@@ -67,33 +44,144 @@ const filteredProducts = computed(() => {
     );
 });
 
-const selectApplicant = (applicant) => {
+const filteredPlans = computed(() => {
+    const q = planQuery.value.toLowerCase();
+    return plans.value.filter((p) => p.name?.toLowerCase().includes(q));
+});
+
+const selectApplicant = async (applicant) => {
     selectedApplicant.value = applicant;
-    products.value = applicant?.products || [];
+    products.value = [];
+    plans.value = [];
     selectedProduct.value = null;
-    creditScore.value = applicant?.credit || null;
+    selectedPlan.value = null;
+    creditScore.value = null;
+    if (applicant?.id) {
+        await fetchApplicantDetail(applicant.id);
+    }
 };
 
 const selectProduct = (product) => {
     selectedProduct.value = product;
+    plans.value = product?.plans || [];
+    selectedPlan.value = null;
+    planQuery.value = '';
 };
 
-const handleApply = () => {
-    if (!selectedApplicant.value || !selectedProduct.value) {
-        showMessageAlert({ message: 'Select an applicant and a product before applying.', type: 'warning' });
+const handleApply = async () => {
+    if (!selectedApplicant.value || !selectedProduct.value || !selectedPlan.value || !amount.value) {
+        showMessageAlert({ message: 'Select an applicant, product, plan and amount before applying.', type: 'warning' });
         return;
     }
-    showMessageAlert({
-        message: `Applied ${selectedProduct.value.name || selectedProduct.value.code} for ${selectedApplicant.value.first_name}`,
-        type: 'success',
-    });
+    const numericAmount = Number(amount.value);
+    const limit = creditScore.value
+    const availableLimit = Number(limit?.available_limit ?? 0);
+
+    if (numericAmount > availableLimit) {
+        showMessageAlert({ message: `Amount cannot exceed available limit of ${availableLimit}.`, type: 'warning' });
+        return;
+    }
+
+    const payload = {
+        loan_amount: numericAmount,
+        plan_id: selectedPlan.value.id,
+        product_id: selectedProduct.value.id,
+        applicant_id: selectedApplicant.value.id,
+    };
+
+    try {
+        isCalculating.value = true;
+        const response = await axios.post(API.APPLICATIONS_CALCULATE, payload);
+        calculationResult.value = response.data;
+        showCalculationModal.value = true;
+    } catch (error) {
+        console.error('Error calculating application:', error?.response?.data || error.message);
+        const message = error?.response?.data?.message || 'Unable to calculate application.';
+        showMessageAlert({ message, type: 'error' });
+    } finally {
+        isCalculating.value = false;
+    }
 };
+
+const confirmInitiate = async () => {
+    if (!calculationResult.value) return;
+    const payload = {
+        loan_amount: Number(amount.value),
+        plan_id: selectedPlan.value.id,
+        product_id: selectedProduct.value.id,
+        applicant_id: selectedApplicant.value.id,
+    };
+    try {
+        isApplying.value = true;
+        const response = await axios.post(API.APPLICATIONS_INITIATE, payload);
+        const message = response.data?.message || 'Application initiated successfully.';
+        showMessageAlert({ message, type: 'success' });
+        showCalculationModal.value = false;
+        router.push('/dashboard/applications');
+    } catch (error) {
+        console.error('Error initiating application:', error?.response?.data || error.message);
+        const message = error?.response?.data?.message || 'Unable to initiate application.';
+        showMessageAlert({ message, type: 'error' });
+    } finally {
+        isApplying.value = false;
+    }
+};
+
+const fetchApplicantData = async (search = '') => {
+    loadingApplicants.value = true;
+    try {
+        const params = {
+            pagination: true,
+            page: 1,
+            per_page: 10,
+            search: search.trim(),
+            sort_field: 'applicants.id',
+            sort_order: 'DESC'
+        };
+
+        const response = await axios.get(API.APPLICANTS, { params });
+        const { data } = response.data;
+        applicants.value = data || [];
+    } catch (error) {
+        console.error('Error fetching applicants:', error?.response?.data || error.message);
+        showMessageAlert({ message: 'Unable to load applicants.', type: 'error' });
+    } finally {
+        loadingApplicants.value = false;
+    }
+};
+
+const fetchApplicantDetail = async (applicantId) => {
+    loadingApplicantDetail.value = true;
+    try {
+        const response = await axios.get(`${API.APPLICANTS}${applicantId}`);
+        const detail = response.data?.data || response.data;
+        selectedApplicant.value = detail || selectedApplicant.value;
+        products.value = detail?.products || [];
+        plans.value = [];
+        creditScore.value = detail?.credit_limit || null;
+    } catch (error) {
+        console.error('Error fetching applicant detail:', error?.response?.data || error.message);
+        showMessageAlert({ message: 'Unable to load applicant details.', type: 'error' });
+    } finally {
+        loadingApplicantDetail.value = false;
+    }
+};
+
+watch(applicantQuery, (newQuery) => {
+    if (applicantSearchTimeout) clearTimeout(applicantSearchTimeout);
+    applicantSearchTimeout = setTimeout(() => fetchApplicantData(newQuery), 300);
+});
+
+onMounted(() => {
+    fetchApplicantData();
+});
+
 </script>
 
 <template>
     <div class="">
         <div class="rounded-2xl p-6 shadow-xl shadow-black/50">
-            <h2 class="text-lg font-semibold text-black">Add Application</h2>
+            <h2 class="text-lg font-semibold text-black">Add Transaction</h2>
             <p class="text-sm text-black">Select an applicant, review credit, then choose a product.</p>
 
             <div class="mt-6 space-y-6">
@@ -114,7 +202,11 @@ const handleApply = () => {
                             </div>
                             <ComboboxOptions
                                 class="absolute z-20 mt-2 max-h-56 w-full overflow-auto rounded-xl border border-slate-800 bg-slate-900/95 py-1 shadow-xl shadow-black/40 focus:outline-none">
-                                <div v-if="!filteredApplicants.length"
+                                <div v-if="loadingApplicants"
+                                    class="cursor-default select-none px-4 py-2 text-sm text-slate-200">
+                                    Loading applicants...
+                                </div>
+                                <div v-else-if="!filteredApplicants.length"
                                     class="cursor-default select-none px-4 py-2 text-sm text-black">
                                     No applicants found.
                                 </div>
@@ -126,8 +218,8 @@ const handleApply = () => {
                                     ]">
                                         <div>
                                             <p class="font-semibold">{{ applicant.first_name }} {{ applicant.last_name
-                                                }}</p>
-                                            <p class="text-xs text-slate-400">{{ applicant.email }} · {{
+                                            }}</p>
+                                            <p class="text-xs text-slate-400">{{ applicant.email }} - {{
                                                 applicant.mobile_no }}</p>
                                         </div>
                                         <CheckIcon v-if="selected" class="h-5 w-5 text-emerald-400"
@@ -143,20 +235,20 @@ const handleApply = () => {
                     class="rounded-xl w-80 border border-slate-800 bg-slate-900/70 px-4 py-3 shadow-inner shadow-black/30">
                     <div class="flex  items-center justify-between">
                         <div>
-                            <p class="text-sm text-white">Credit Score</p>
+                            <p class="text-sm text-white">Credit Limit</p>
                             <p class="text-2xl font-semibold text-slate-50">
-                                {{ creditScore?.score ?? '—' }}
+                                {{ creditScore?.credit_limit ?? '--' }}
                             </p>
                         </div>
-                        <div v-if="creditScore?.category"
+                        <div v-if="creditScore?.status"
                             class="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-300">
-                            {{ creditScore.category }}
+                            {{ creditScore.status }}
                         </div>
                     </div>
                     <div class="mt-2 flex items-center justify-between text-sm text-slate-300">
-                        <span>Credit Limit</span>
+                        <span>Available Credit Limit</span>
                         <span class="font-semibold text-slate-100">
-                            {{ creditScore?.limit ? creditScore.limit.toLocaleString() : '—' }}
+                            {{ creditScore?.available_limit ? creditScore.available_limit.toLocaleString() : '--' }}
                         </span>
                     </div>
                 </div>
@@ -204,13 +296,142 @@ const handleApply = () => {
                         </div>
                     </Combobox>
                 </div>
+
+                <div v-if="selectedProduct">
+                    <label class="block text-sm font-medium text-black">Plan</label>
+                    <Combobox v-model="selectedPlan" :disabled="!selectedProduct">
+                        <div class="relative mt-2 w-80">
+                            <div :class="[
+                                'relative w-full cursor-default overflow-hidden rounded-xl border px-3 py-2 text-left shadow-inner focus:outline-none sm:text-sm',
+                                selectedProduct ? 'border-slate-700 bg-slate-900/70 text-white shadow-black/30' : 'border-slate-800 bg-slate-900/50 text-slate-500'
+                            ]">
+                                <ComboboxInput
+                                    class="w-full border-none bg-transparent py-1.5 pr-10 text-sm focus:ring-0 placeholder:text-white"
+                                    placeholder="Search plans" :displayValue="(plan) => plan ? plan.name : ''"
+                                    :disabled="!selectedProduct" @change="planQuery = $event.target.value" />
+                                <ComboboxButton
+                                    class="absolute inset-y-0 right-0 flex items-center pr-2 text-slate-400">
+                                    <ChevronUpDownIcon class="h-5 w-5" aria-hidden="true" />
+                                </ComboboxButton>
+                            </div>
+                            <ComboboxOptions v-if="selectedProduct"
+                                class="absolute z-20 mt-2 max-h-56 w-full overflow-auto rounded-xl border border-slate-800 bg-slate-900/95 py-1 shadow-xl shadow-black/40 focus:outline-none">
+                                <div v-if="!filteredPlans.length"
+                                    class="cursor-default select-none px-4 py-2 text-sm text-slate-400">
+                                    No plans found.
+                                </div>
+                                <ComboboxOption v-for="plan in filteredPlans" :key="plan.id" :value="plan"
+                                    v-slot="{ active, selected }">
+                                    <div :class="[
+                                        'flex w-full items-center justify-between px-3 py-2 text-sm',
+                                        active ? 'bg-slate-800 text-slate-100' : 'text-slate-200'
+                                    ]">
+                                        <div>
+                                            <p class="font-semibold">{{ plan.name }}</p>
+                                            <p class="text-xs text-slate-400">{{ plan.duration_value }} {{
+                                                plan.duration_unit }}</p>
+                                        </div>
+                                        <CheckIcon v-if="selected" class="h-5 w-5 text-emerald-400"
+                                            aria-hidden="true" />
+                                    </div>
+                                </ComboboxOption>
+                            </ComboboxOptions>
+                        </div>
+                    </Combobox>
+                </div>
+
+                <div v-if="selectedPlan" class="w-80">
+                    <label class="block text-sm font-medium text-black">Amount</label>
+                    <input v-model="amount" type="number" min="0"
+                        class="mt-2 w-full rounded-xl border border-slate-700 bg-slate-900/70 px-3 py-2 text-sm text-white placeholder:text-white shadow-inner shadow-black/30 focus:outline-none focus:ring-2 focus:ring-emerald-400/40"
+                        placeholder="Enter amount" />
+                </div>
             </div>
 
             <div class="mt-8 flex justify-end">
                 <button type="button"
                     class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 hover:from-emerald-500 hover:to-emerald-600 disabled:opacity-50"
-                    :disabled="!selectedApplicant || !selectedProduct" @click="handleApply">
-                    Apply
+                    :disabled="!selectedApplicant || !selectedProduct || !selectedPlan || !amount || isApplying || isCalculating"
+                    @click="handleApply">
+                    {{ isCalculating ? 'Calculating...' : isApplying ? 'Applying...' : 'Apply' }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div v-if="showCalculationModal"
+        class="fixed inset-0 z-40 flex items-center justify-center bg-black/60 px-4 py-6 backdrop-blur">
+        <div class="w-full max-w-3xl rounded-2xl bg-white p-6 shadow-2xl">
+            <div class="flex items-start justify-between">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900">Application Summary</h3>
+                    <p class="text-sm text-gray-600">{{ calculationResult?.message }}</p>
+                </div>
+                <button class="text-gray-500 hover:text-gray-700" @click="showCalculationModal = false">✕</button>
+            </div>
+
+            <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div class="rounded-lg border border-gray-200 p-4">
+                    <p class="text-sm text-gray-500">Requested</p>
+                    <p class="text-xl font-semibold text-gray-900">{{ calculationResult?.loan_amount }}</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-4">
+                    <p class="text-sm text-gray-500">Approved</p>
+                    <p class="text-xl font-semibold text-gray-900">{{ calculationResult?.approved_amount }}</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-4">
+                    <p class="text-sm text-gray-500">Disbursed</p>
+                    <p class="text-xl font-semibold text-gray-900">{{ calculationResult?.disbursed_amount }}</p>
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <h4 class="text-sm font-semibold text-gray-800">Charges (Total: {{ calculationResult?.total_charges }})
+                </h4>
+                <div class="mt-2 space-y-2 rounded-lg border border-gray-200 p-3 max-h-40 overflow-auto">
+                    <div v-if="!calculationResult?.charges?.length" class="text-sm text-gray-500">No charges.</div>
+                    <div v-for="(charge, idx) in calculationResult?.charges || []" :key="idx"
+                        class="flex items-center justify-between text-sm text-gray-700">
+                        <span>{{ charge.charge_condition || 'Charge' }}</span>
+                        <span class="font-semibold">{{ charge.charge_amount }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <h4 class="text-sm font-semibold text-gray-800">Installments</h4>
+                <div class="mt-2 max-h-56 overflow-auto rounded-lg border border-gray-200">
+                    <table class="min-w-full text-sm text-gray-800">
+                        <thead class="bg-gray-50 text-left">
+                            <tr>
+                                <th class="px-3 py-2 font-semibold">Amount</th>
+                                <th class="px-3 py-2 font-semibold">Due Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(inst, idx) in calculationResult?.installments || []" :key="idx"
+                                class="border-t">
+                                <td class="px-3 py-2">{{ inst.amount }}</td>
+                                <td class="px-3 py-2">{{ inst.due_date }}</td>
+                            </tr>
+                            <tr v-if="!calculationResult?.installments?.length">
+                                <td colspan="2" class="px-3 py-2 text-gray-500">No installments.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3">
+                <button type="button"
+                    class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+                    @click="showCalculationModal = false">
+                    Cancel
+                </button>
+                <button type="button"
+                    class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 disabled:opacity-50"
+                    :disabled="isApplying" @click="confirmInitiate">
+                    {{ isApplying ? 'Confirming...' : 'Confirm & Apply' }}
                 </button>
             </div>
         </div>

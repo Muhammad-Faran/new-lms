@@ -130,7 +130,8 @@ onMounted(() => {
                 <div
                     class="mt-10 space-y-8 border-b border-gray-900/10 pb-12 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0">
                     <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
-                        <label for="applicant-name" class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5">Applicant
+                        <label for="applicant-name"
+                            class="block text-sm/6 font-medium text-gray-900 sm:pt-1.5">Applicant
                             Name</label>
                         <div class="mt-2 sm:col-span-2 sm:mt-0">
                             <input type="text" id="applicant-name" v-model="form.applicant.name" disabled
@@ -245,7 +246,7 @@ onMounted(() => {
         <div class="mt-6 flex items-center justify-end gap-x-6">
             <button type="button" class="text-sm/6 font-semibold text-gray-900" @click="handleCancel">Cancel</button>
             <button type="submit" v-loading="loading"
-                class="inline-flex justify-center rounded-md bg-[#75ba2c] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                class="inline-flex justify-center rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900">
                 Save
             </button>
         </div>
