@@ -381,6 +381,31 @@ const navigation = ref(
             ]
         },
         {
+            name: 'Repayments',
+            href: '#',
+            icon: ArrowsRightLeftIcon,
+            isExpandable: true,
+            expanded: false,
+            current: false,
+            permissions: [],
+            children: [
+                {
+                    name: 'Add Loan Application',
+                    href: '/dashboard/repayments/add',
+                    icon: ReceiptPercentIcon,
+                    current: false,
+                    permissions: []
+                },
+                {
+                    name: 'Repayments',
+                    href: '/dashboard/repayments',
+                    icon: ArrowPathRoundedSquareIcon,
+                    current: false,
+                    permissions: ['view-repayments']
+                },
+            ]
+        },
+        {
             name: 'Product',
             href: '#',
             icon: CubeTransparentIcon,

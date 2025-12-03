@@ -23,9 +23,10 @@ import AssignFinancingPolicy from '../views/Applicant/AssignFinancingPolicy.vue'
 import ChangePassword from '../views/ChangePassword.vue';
 import AssignCreditLimit from '../views/Applicant/AssignCreditLimit.vue';
 import Applications from '../views/Application/Applications.vue';
-import Repayments from '../views/Application/Repayments.vue';
+import Repayments from '../views/Repayments/Repayments.vue';
 import ConfigureApplicantDetails from '../views/Applicant/ConfigureApplicantDetails.vue';
 import AddApplications from '../views/Application/AddApplications.vue';
+import AddRepayments from '../views/Repayments/AddRepayments.vue';
 
 const routes = [
   {
@@ -258,6 +259,13 @@ const routes = [
         path: 'repayments',
         name: 'Repayments',
         component: Repayments,
+        props: true,
+        meta: { requiresAuth: true, permissions: ['view-repayments'] },
+      },
+      {
+        path: 'repayments/add',
+        name: 'AddRepayments',
+        component: AddRepayments,
         props: true,
         meta: { requiresAuth: true, permissions: ['view-repayments'] },
       },

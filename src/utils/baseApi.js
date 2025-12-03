@@ -29,6 +29,7 @@ const API = {
     EXPORT_DELINQUENT_APPLICATIONS: BASE_URL + '/api/v1/reports/export-overdue-loans',
     APPLICATIONS_INITIATE: BASE_URL + '/api/v1/applications/initiate',
     APPLICATIONS_CALCULATE: BASE_URL + '/api/v1/applications/calculate',
+    APPLICATIONS_LOAN_DETAILS: BASE_URL + '/api/v1/applicantLoanDetails/',
 }
 
 export default API;
