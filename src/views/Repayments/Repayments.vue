@@ -339,7 +339,7 @@ onMounted(() => {
                 </template>
 
                 <template #actions="{ value }">
-                    <Menu as="div" class="relative inline-block text-left">
+                    <Menu as="div" class="inline-block text-left">
                         <div>
                             <MenuButton
                                 class="inline-flex w-full justify-center bg-gray-100 px-1 py-1 rounded-full text-sm font-medium text-white hover:bg-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
@@ -355,11 +355,11 @@ onMounted(() => {
                             leave-from-class="transform scale-100 opacity-100"
                             leave-to-class="transform scale-95 opacity-0">
                             <MenuItems
-                                class="z-10 absolute right-0 mt-2 w-36 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                                class="z-50 absolute right-0 mt-2 w-40 origin-top-right divide-y divide-slate-800 rounded-xl bg-slate-900 shadow-lg shadow-black/40 ring-1 ring-slate-800 focus:outline-none">
                                 <div class="px-1 py-1">
                                     <MenuItem v-slot="{ active }">
                                     <button :class="[
-                                        active ? 'bg-violet-500 text-white' : 'text-gray-900',
+                                        active ? 'bg-slate-800 text-emerald-300' : 'text-slate-100',
                                         'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                     ]" @click="handleView(value)">
 
@@ -368,7 +368,7 @@ onMounted(() => {
                                     </MenuItem>
                                     <MenuItem v-slot="{ active }">
                                     <button :class="[
-                                        active ? 'bg-violet-500 text-white' : 'text-gray-900',
+                                        active ? 'bg-slate-800 text-emerald-300' : 'text-slate-100',
                                         'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                     ]" @click="handleUpdateApplicationStatus(value)">
 
@@ -450,86 +450,86 @@ onMounted(() => {
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Full name</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.first_name }}
+                                                        {{ selectedRowData.applicant.first_name }}
                                                         {{ ' ' }}
-                                                        {{ selectedRowData.Applicant.last_name }}
+                                                        {{ selectedRowData.applicant.last_name }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Father name</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.father_name }}
+                                                        {{ selectedRowData.applicant.father_name }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Mother name</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.mother_name }}
+                                                        {{ selectedRowData.applicant.mother_name }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">CNIC</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.cnic }}
+                                                        {{ selectedRowData.applicant.cnic }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">CNIC Issuance Date
                                                     </dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.cnic_issuance_date }}
+                                                        {{ selectedRowData.applicant.cnic_issuance_date }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Mobile Number</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.mobile_no }}
+                                                        {{ selectedRowData.applicant.mobile_no }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Email address</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.email }}
+                                                        {{ selectedRowData.applicant.email }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Date of birth</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.dob }}
+                                                        {{ selectedRowData.applicant.dob }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Wallet ID</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.wallet_id }}
+                                                        {{ selectedRowData.applicant.wallet_id }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Shipper ID</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.shipper_id }}
+                                                        {{ selectedRowData.applicant.shipper_id }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Address</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.address }}
+                                                        {{ selectedRowData.applicant.address }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">City</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.Applicant.city }}
+                                                        {{ selectedRowData.applicant.city }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Status</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
                                                         <span :class="[
-                                                            selectedRowData.Applicant.status === 1 ? 'bg-green-100 text-green-800 border-green-300' : 'bg-red-100 text-red-800 border-red-300',
+                                                            selectedRowData.applicant.status === 1 ? 'bg-green-100 text-green-800 border-green-300' : 'bg-red-100 text-red-800 border-red-300',
                                                             'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border'
                                                         ]">
-                                                            {{ selectedRowData.Applicant.status === 1 ? 'Active' :
+                                                            {{ selectedRowData.applicant.status === 1 ? 'Active' :
                                                                 'Inactive'
                                                             }}
                                                         </span>

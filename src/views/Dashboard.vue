@@ -371,13 +371,6 @@ const navigation = ref(
                     current: false,
                     permissions: ['view-applications']
                 },
-                {
-                    name: 'Repayments',
-                    href: '/dashboard/repayments',
-                    icon: ArrowPathRoundedSquareIcon,
-                    current: false,
-                    permissions: ['view-repayments']
-                },
             ]
         },
         {

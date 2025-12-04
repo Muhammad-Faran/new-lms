@@ -2,7 +2,7 @@
 import { ref, computed, watch, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { Combobox, ComboboxInput, ComboboxOptions, ComboboxOption, ComboboxButton } from '@headlessui/vue';
-import { ChevronUpDownIcon, CheckIcon } from '@heroicons/vue/20/solid';
+import { ChevronUpDownIcon, CheckIcon, XMarkIcon } from '@heroicons/vue/20/solid';
 import axios from 'axios';
 import { showMessageAlert } from '../../utils/alert';
 import API from '../../utils/baseApi';
@@ -18,6 +18,9 @@ const applicantLoanDetail = ref(null);
 const selectedApplicant = ref(null);
 const selectedProduct = ref(null);
 const selectedPlan = ref(null);
+const showInstallmentsModal = ref(false);
+const selectedApplicationInstallments = ref([]);
+const selectedApplicationMeta = ref(null);
 const creditScore = ref(null);
 const loadingApplicants = ref(false);
 const loadingApplicantDetail = ref(false);
@@ -25,6 +28,7 @@ const isCalculating = ref(false);
 const isApplying = ref(false);
 const calculationResult = ref(null);
 const showCalculationModal = ref(false);
+const payInstallmentLoadingId = ref(null);
 let applicantSearchTimeout;
 const router = useRouter();
 
@@ -172,6 +176,49 @@ const fetchApplicantLoanDetail = async (applicantId) => {
 
 const applicantApplications = computed(() => applicantLoanDetail.value?.applications || []);
 
+const openInstallmentsModal = (application) => {
+    selectedApplicationInstallments.value = application?.installments || [];
+    selectedApplicationMeta.value = application || null;
+    showInstallmentsModal.value = true;
+};
+
+const closeInstallmentsModal = () => {
+    showInstallmentsModal.value = false;
+    selectedApplicationInstallments.value = [];
+    selectedApplicationMeta.value = null;
+};
+
+const payInstallment = async (inst) => {
+    if (!selectedApplicant.value || !selectedApplicationMeta.value) {
+        showMessageAlert({ message: 'Select an applicant and application first.', type: 'warning' });
+        return;
+    }
+
+    const payload = {
+        applicant_id: selectedApplicant.value.id,
+        installment_id: inst.id,
+        application_id: selectedApplicationMeta.value.id,
+        amount: inst.outstanding,
+    };
+
+    try {
+        payInstallmentLoadingId.value = inst.id;
+        const response = await axios.post(API.PAY_INSTALLMENT, payload);
+        const message = response.data?.message || 'Installment paid successfully.';
+        showMessageAlert({ message, type: 'success' });
+        await fetchApplicantLoanDetail(selectedApplicant.value.id);
+        // refresh modal data from updated detail
+        const updatedApp = applicantApplications.value.find((app) => app.id === selectedApplicationMeta.value.id);
+        selectedApplicationMeta.value = updatedApp || selectedApplicationMeta.value;
+        selectedApplicationInstallments.value = updatedApp?.installments || [];
+    } catch (error) {
+        const message = error?.response?.data?.message || 'Unable to pay installment.';
+        showMessageAlert({ message, type: 'error' });
+    } finally {
+        payInstallmentLoadingId.value = null;
+    }
+};
+
 watch(applicantQuery, (newQuery) => {
     if (applicantSearchTimeout) clearTimeout(applicantSearchTimeout);
     applicantSearchTimeout = setTimeout(() => fetchApplicantData(newQuery), 300);
@@ -223,7 +270,7 @@ onMounted(() => {
                                     ]">
                                         <div>
                                             <p class="font-semibold">{{ applicant.first_name }} {{ applicant.last_name
-                                                }}</p>
+                                            }}</p>
                                             <p class="text-xs text-slate-400">{{ applicant.email }} - {{
                                                 applicant.mobile_no }}</p>
                                         </div>
@@ -272,14 +319,15 @@ onMounted(() => {
                     <table class="min-w-full divide-y divide-slate-200 text-sm text-slate-900">
                         <thead class="bg-slate-50">
                             <tr>
-                                <th class="px-4 py-3 text-left font-semibold">Application #</th>
-                                <th class="px-4 py-3 text-left font-semibold">Product</th>
-                                <th class="px-4 py-3 text-left font-semibold">Plan</th>
-                                <th class="px-4 py-3 text-left font-semibold">Loan Amount</th>
-                                <th class="px-4 py-3 text-left font-semibold">Disbursed</th>
-                                <th class="px-4 py-3 text-left font-semibold">Outstanding</th>
-                                <th class="px-4 py-3 text-left font-semibold">Installments</th>
-                                <th class="px-4 py-3 text-left font-semibold">Status</th>
+                                <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Application #</th>
+                                <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Product</th>
+                                <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Plan</th>
+                                <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Loan Amount</th>
+                                <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Disbursed</th>
+                                <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Outstanding</th>
+                                <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Installments</th>
+                                <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Actions</th>
+                                <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Status</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-200">
@@ -292,6 +340,13 @@ onMounted(() => {
                                 <td class="px-4 py-3">{{ application.disbursed_amount }}</td>
                                 <td class="px-4 py-3">{{ application.outstanding_amount }}</td>
                                 <td class="px-4 py-3">{{ application.installments?.length || 0 }}</td>
+                                <td class="px-4 py-3">
+                                    <button type="button"
+                                        class="bg-slate-900 rounded-lg whitespace-nowrap border border-slate-200 px-3 py-1 text-xs font-semibold text-white hover:bg-slate-800"
+                                        @click="openInstallmentsModal(application)">
+                                        View Installments
+                                    </button>
+                                </td>
                                 <td class="px-4 py-3">
                                     <span :class="[
                                         application.status === 'disbursed'
@@ -312,4 +367,76 @@ onMounted(() => {
         </div>
     </div>
 
+    <div v-if="showInstallmentsModal"
+        class="fixed inset-0 z-40 flex items-center justify-center bg-black/60 px-4 py-6 backdrop-blur">
+        <div class="w-full max-w-4xl rounded-2xl bg-white p-6 shadow-2xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900">Installments - Application {{
+                        selectedApplicationMeta?.id }}</h3>
+                    <p class="text-sm text-gray-600">
+                        {{ selectedApplicationMeta?.product?.name || 'Product' }} · Plan
+                        {{ selectedApplicationMeta?.plan?.name || selectedApplicationMeta?.plan_id }}
+                    </p>
+                </div>
+                <button class="text-gray-500 hover:text-gray-700" @click="closeInstallmentsModal">
+                    <XMarkIcon class="h-8 w-8 text-black" aria-hidden="true" />
+                </button>
+            </div>
+
+            <div class="mt-4 max-h-[420px] overflow-auto rounded-xl border border-gray-200">
+                <table class="min-w-full divide-y divide-gray-200 text-sm text-gray-800">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left font-semibold">#</th>
+                            <th class="px-4 py-3 text-left font-semibold">Amount</th>
+                            <th class="px-4 py-3 text-left font-semibold">Outstanding</th>
+                            <th class="px-4 py-3 text-left font-semibold">Due Date</th>
+                            <th class="px-4 py-3 text-left font-semibold">Status</th>
+                            <th class="px-4 py-3 text-left font-semibold">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <tr v-for="inst in selectedApplicationInstallments" :key="inst.id" class="bg-white">
+                            <td class="px-4 py-3">{{ inst.id }}</td>
+                            <td class="px-4 py-3">{{ inst.amount }}</td>
+                            <td class="px-4 py-3">{{ inst.outstanding }}</td>
+                            <td class="px-4 py-3">{{ inst.due_date }}</td>
+                            <td class="px-4 py-3">
+                                <span :class="[
+                                    inst.status === 'paid'
+                                        ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
+                                        : 'bg-amber-100 text-amber-800 border-amber-200',
+                                    'inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold'
+                                ]">
+                                    {{ inst.status }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <button type="button"
+                                    class="rounded-lg bg-slate-900 border border-slate-200 px-3 py-1 text-xs font-semibold text-white hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    :disabled="inst.status === 'paid' || payInstallmentLoadingId === inst.id"
+                                    @click="payInstallment(inst)">
+                                    {{ payInstallmentLoadingId === inst.id ? 'Paying...' : 'Pay Installment' }}
+                                </button>
+                            </td>
+                        </tr>
+                        <tr v-if="!selectedApplicationInstallments.length">
+                            <td colspan="6" class="px-4 py-3 text-center text-gray-500">
+                                No installments found.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 flex justify-end">
+                <button type="button"
+                    class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100"
+                    @click="closeInstallmentsModal">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
 </template>
