@@ -270,7 +270,7 @@ onMounted(() => {
                                     ]">
                                         <div>
                                             <p class="font-semibold">{{ applicant.first_name }} {{ applicant.last_name
-                                            }}</p>
+                                                }}</p>
                                             <p class="text-xs text-slate-400">{{ applicant.email }} - {{
                                                 applicant.mobile_no }}</p>
                                         </div>
@@ -413,12 +413,14 @@ onMounted(() => {
                                 </span>
                             </td>
                             <td class="px-4 py-3">
-                                <button type="button"
-                                    class="rounded-lg bg-slate-900 border border-slate-200 px-3 py-1 text-xs font-semibold text-white hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
-                                    :disabled="inst.status === 'paid' || payInstallmentLoadingId === inst.id"
-                                    @click="payInstallment(inst)">
-                                    {{ payInstallmentLoadingId === inst.id ? 'Paying...' : 'Pay Installment' }}
-                                </button>
+                                <div v-if="inst.status !== 'paid'">
+                                    <button type="button"
+                                        class="rounded-lg bg-slate-900 border border-slate-200 px-3 py-1 text-xs font-semibold text-white hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        :disabled="inst.status === 'paid' || payInstallmentLoadingId === inst.id"
+                                        @click="payInstallment(inst)">
+                                        {{ payInstallmentLoadingId === inst.id ? 'Paying...' : 'Pay Installment' }}
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                         <tr v-if="!selectedApplicationInstallments.length">

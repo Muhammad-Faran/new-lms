@@ -383,7 +383,7 @@ const navigation = ref(
             permissions: [],
             children: [
                 {
-                    name: 'Add Loan Application',
+                    name: 'Add Installments',
                     href: '/dashboard/repayments/add',
                     icon: ReceiptPercentIcon,
                     current: false,
