@@ -27,10 +27,11 @@
                             <!-- Sidebar component, swap this element with another sidebar if you like -->
                             <div
                                 class="flex grow flex-col gap-y-5 overflow-y-auto bg-gradient-to-b from-slate-950 via-slate-900 to-black px-6 pb-6 ring-1 ring-white/10">
-                                <!-- <div
+                                <div
                                     class="-mx-6 flex h-16 shrink-0 items-center bg-slate-900 border-b border-slate-800/80">
-                                    <img class="ml-10 h-24 w-auto" src="/finova_logo.png" alt="Your Company" />
-                                </div> -->
+                                    <img class="ml-10 h-16 w-auto" src="/fingergent-logo-white.svg"
+                                        alt="Your Company" />
+                                </div>
                                 <nav class="flex flex-1 flex-col mt-5">
                                     <div
                                         class="px-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500/80">
@@ -138,9 +139,9 @@
             <!-- Sidebar component, swap this element with another sidebar if you like -->
             <div
                 class="flex grow flex-col gap-y-5 overflow-y-auto bg-gradient-to-b from-slate-950 via-slate-900 to-black px-6 pb-6">
-                <!-- <div class="-mx-6 flex h-16 shrink-0 items-center bg-slate-900 border-b border-slate-800/80">
-                    <img class="ml-10 h-24 w-auto" src="/finova_logo.png" alt="Your Company" />
-                </div> -->
+                <div class="-mx-6 flex h-16 shrink-0 items-center bg-slate-900 border-b border-slate-800/80">
+                    <img class="ml-14 h-16 p-2 w-auto" src="/fingergent-logo-white.svg" alt="Your Company" />
+                </div>
                 <nav class="flex flex-1 flex-col mt-5">
                     <div class="px-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500/80">Menu</div>
                     <ul role="list" class="mt-1.5 flex flex-1 flex-col gap-y-2.5">

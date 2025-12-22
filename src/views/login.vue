@@ -49,13 +49,13 @@ const handleLogin = async () => {
     <div
         class="flex min-h-full flex-1 flex-col justify-center bg-gradient-to-b from-slate-950 via-slate-900 to-black py-12 sm:px-6 lg:px-8 text-slate-800">
         <div class="sm:mx-auto sm:w-full sm:max-w-md items-center">
-            <!-- <div class="flex justify-center">
-                <img class="h-20 w-auto" src="/finova_logo.png" alt="Your Company" />
-            </div> -->
-            <h2 class="mt-20 text-center text-2xl/9 font-bold tracking-tight text-white">Sign in to your account</h2>
+            <div class="flex justify-center">
+                <img class="h-20 w-auto" src="/fingergent-logo-white.svg" alt="Your Company" />
+            </div>
+            <h2 class="mt-6 text-center text-2xl/9 font-bold tracking-tight text-white">Sign in to your account</h2>
         </div>
 
-        <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
+        <div class="mt-6 sm:mx-auto sm:w-full sm:max-w-[480px]">
             <div
                 class="bg-white/90 backdrop-blur px-6 py-12 shadow-md shadow-slate-200 sm:rounded-2xl sm:px-12 border border-slate-200">
                 <form class="space-y-6" @submit.prevent="handleLogin">
