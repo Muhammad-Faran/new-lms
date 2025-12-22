@@ -125,7 +125,7 @@ const refreshOfacNacta = async (applicantId) => {
         });
 
         // Update the selectedRowData dynamically
-        selectedRowData.value.credit_engine_data.ofac_nacta = response.data.data.data;
+        selectedRowData.value.ofac_nacta = response.data.data.data;
 
         showMessageAlert({ message: 'OFAC NACTA refreshed successfully', type: 'success' });
     } catch (error) {
@@ -541,7 +541,7 @@ onMounted(() => {
                                         <div class="mt-4 border rounded-lg p-4 bg-gray-50 shadow">
                                             <h3 class="text-base font-semibold text-gray-900">OFAC Matches</h3>
                                             <template
-                                                v-if="selectedRowData.credit_engine_data?.ofac_nacta?.ofac_matches?.length">
+                                                v-if="selectedRowData?.ofac_nacta?.ofac_matches?.length">
                                                 <table class="min-w-full divide-y divide-gray-200 mt-4">
                                                     <thead>
                                                         <tr>
@@ -563,7 +563,7 @@ onMounted(() => {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr v-for="(match, index) in selectedRowData.credit_engine_data.ofac_nacta.ofac_matches"
+                                                        <tr v-for="(match, index) in selectedRowData.ofac_nacta.ofac_matches"
                                                             :key="index" class="bg-white odd:bg-gray-50">
                                                             <td class="px-4 py-2 text-sm text-gray-900">{{ match.row.aka
                                                             }}</td>
@@ -586,7 +586,7 @@ onMounted(() => {
                                         <div class="mt-4 border rounded-lg p-4 bg-gray-50 shadow">
                                             <h3 class="text-base font-semibold text-gray-900">UNSC Matches</h3>
                                             <template
-                                                v-if="selectedRowData.credit_engine_data?.ofac_nacta?.unsc_matches?.length">
+                                                v-if="selectedRowData?.ofac_nacta?.unsc_matches?.length">
                                                 <table class="min-w-full divide-y divide-gray-200 mt-4">
                                                     <thead>
                                                         <tr>
@@ -608,7 +608,7 @@ onMounted(() => {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr v-for="(match, index) in selectedRowData.credit_engine_data.ofac_nacta.unsc_matches"
+                                                        <tr v-for="(match, index) in selectedRowData.ofac_nacta.unsc_matches"
                                                             :key="index" class="bg-white odd:bg-gray-50">
                                                             <td class="px-4 py-2 text-sm text-gray-900">{{ match.row.aka
                                                             }}</td>
