@@ -26,6 +26,171 @@ const columns = [
     { Header: 'Status', accessor: 'status', slotName: "status" },
     { Header: 'Action', accessor: 'actions', slotName: "actions" },
 ]
+const showTasdeeqReport = ref(false)
+
+const showDataCheckReport = ref(false)
+
+const dataCheckDummy = ref({
+  individual_detail: {
+    FILE_NO: 'DC-000123',
+    CREATION_DATE: '22/12/2025',
+    FIRST_NAME: 'Muhammad',
+    MIDDLE_NAME: 'Faran',
+    LAST_NAME: 'Khan',
+    CNIC: '36302-2315858-9',
+    TRANX_NO: 'TRX-998877',
+    TRANX_DATE: '22/12/2025',
+    NIC: 'N/A',
+    GENDER: 'Male',
+    MAKER: 'Maker User',
+    CHECKER: 'Checker User',
+    DOB: '01/01/1995',
+
+    FATHER_HUSBAND_FNAME: 'Abc',
+    FATHER_HUSBAND_MNAME: '',
+    FATHER_HUSBAND_LNAME: 'Father',
+
+    // Blade @foreach homeInformation
+    homeInformation: [
+      {
+        SEQ_NO: '1st',
+        REPORTED_ON: '20/12/2025',
+        ADDRESS: 'House 123, Street 5',
+        CITY: 'Karachi',
+        PHONE1: '021-1234567',
+        PHONE2: '0322-6457336',
+        employerInformationF: {
+          REPORTED_ON: '19/12/2025',
+          EMPLOYER: 'Faran Tech Pvt Ltd',
+          ADDRESS: 'Office 12, Shahrah-e-Faisal',
+          CITY: 'Karachi',
+          PHONE1: '021-2222222',
+          PHONE2: '0300-1111111',
+        },
+      },
+    ],
+
+    // Blade @foreach dataCheckDefaults
+    dataCheckDefaults: [
+      {
+        MEM_NAME: 'Dummy Member',
+        SUBBRN_NAME: 'Dummy Branch',
+        UPD_STATUS_DATE: '15/12/2025',
+        ORG_STATUS_DATE: '10/12/2025',
+        UPD_ACCT_NO: 'ACC-UPDATED-01',
+        ORG_ACCT_NO: 'ACC-ORIG-01',
+        UPD_AMOUNT: 'PKR 10,000',
+        ORG_AMOUNT: 'PKR 9,500',
+        UPD_ACCT_TY: 'PL',
+        ORG_ACCT_TY: 'PL',
+        UPD_STATUS: 'Active',
+        ORG_STATUS: 'Active',
+        UPD_RTR: 'N/A',
+        ORG_RTR: 'N/A',
+        ASSOC_TY: 'PRN',
+        GROUP_ID: 'G-1001',
+      },
+    ],
+
+    // Blade @foreach dataCheckCcpMaster
+    dataCheckCcpMaster: [
+      {
+        applicationId: 1,
+        MEM_NAME: 'Dummy Member',
+        SUBBRN_NAME: 'Branch A',
+        ACCT_NO: 'CCP-ACC-001',
+        TERM: '12M',
+        ACCT_TY: 'PL',
+        ACCT_STATUS: 'OK',
+        MASTER_LIMIT: 'PKR 50,000',
+        OPEN_DATE: '01/01/2025',
+        MATURITY_DATE: '01/01/2026',
+        STATUS_DATE: '20/12/2025',
+        LAST_PAYMENT: '15/12/2025',
+        OVERDUEAMOUNT: '0',
+        BALANCE: 'PKR 25,000',
+        PAYMENT_STATUS: 'OK',
+
+        // simulating $dataCheckCcpMaster->dataCheckCcpDetailF(...)
+        ccpDetails: [
+          { STATUS_MONTH: '112025', PAYMENT_STATUS: 'OK' },
+          { STATUS_MONTH: '102025', PAYMENT_STATUS: 'OK' },
+          { STATUS_MONTH: '092025', PAYMENT_STATUS: 'OK' },
+          { STATUS_MONTH: '082025', PAYMENT_STATUS: 'OK' },
+        ],
+
+        // simulating $dataCheckCcpMaster->dataCheckCcpSummaryF(...)
+        ccpSummary: { OK: 10, X: 0, P30: 0, P60: 0, P90: 0, P120: 0, P150: 0, P180: 0 },
+      },
+    ],
+
+    dataCheckCcpSummaryTotal: { OK: 10, X: 0, P30: 0, P60: 0, P90: 0, P120: 0, P150: 0, P180: 0 },
+
+    // Blade @foreach dataCheckEnquiries
+    dataCheckEnquiries: [
+      { MEM_NAME: 'Member A', SUBBRN_NAME: 'Branch A', REFERENCE_DATE: '10/11/2025', REFERENCE_NO: 'APP-001', AMOUNT: 'PKR 20,000', ACCT_TY: 'PL', ASSOC_TY: 'PRN' },
+      { MEM_NAME: 'Member B', SUBBRN_NAME: 'Branch B', REFERENCE_DATE: '01/10/2025', REFERENCE_NO: 'APP-002', AMOUNT: 'PKR 15,000', ACCT_TY: 'GL', ASSOC_TY: 'COB' },
+    ],
+
+    // Blade @foreach dataCheckReview
+    dataCheckReview: [
+      { MEMBER: 'Member A', REVIEWS: 2 },
+      { MEMBER: 'Member B', REVIEWS: 1 },
+    ],
+  },
+})
+
+const getDataCheckReport = () => {
+  showDataCheckReport.value = true
+}
+
+const handleDialogClose = () => {
+  open.value = false;
+  resetTab();
+  showTasdeeqReport.value = false;
+  showDataCheckReport.value = false; // ✅ reset
+};
+
+
+
+const tasdeeqDummy = ref({
+  other_details: {
+    reportDate: '22/12/2025',
+    reportTime: '10:45 AM',
+    refNo: 'TSDQ-REF-123456',
+    noOfCreditEnquiry: '03',
+    noOfActiveAccounts: '02',
+    totalOutstandingBalance: 'PKR 45,000',
+    Remarks: 'This is a dummy remark for Tasdeeq report.',
+  },
+  personal: {
+    NAME: 'Muhammad Faran',
+    FATHER_OR_HUSBAND_NAME: 'Abc Father',
+    GENDER: 'Male',
+    CNIC: '36302-2315858-9',
+    PASSPORT: 'N/A',
+    DOB: '01/01/1995',
+    NIC: 'N/A',
+    BUSINESS_OR_PROFESSION: 'Software Engineer',
+    NATIONALITY: 'Pakistani',
+    NTN: 'N/A',
+    BORROWER_TYPE: 'Individual',
+    CURRENT_RESIDENTIAL_ADDRESS: 'House 123, Street 5, Karachi',
+    CURRENT_RESIDENTIAL_ADDRESS_DATE: '01/10/2025',
+    PERMANENT_ADDRESS: 'Village XYZ, District ABC',
+    PERMANENT_ADDRESS_DATE: '01/01/2020',
+    PREVIOUS_RESIDENTIAL_ADDRESS: 'Old Address Dummy',
+    PREVIOUS_RESIDENTIAL_ADDRESS_DATE: '01/06/2018',
+    EMPLOYER_OR_BUSINESS: 'Faran Tech Pvt Ltd',
+    EMPLOYER_OR_BUSINESS_DATE: '01/03/2023',
+  },
+})
+
+// click handler
+const getTasdeeqReport = () => {
+  // later you will call API here, and set tasdeeq data from response
+  showTasdeeqReport.value = true
+}
 
 const printerData = ref([])
 const loading = ref(false)
@@ -40,8 +205,11 @@ const selectedRowData = ref(null);
 
 const tabs = ref([
     { name: 'Applicant', current: true },
+    { name: 'Tasdeeq', current: false },
+    { name: 'Data Check', current: false },
     { name: 'Ofac Nacta', current: false }
 ]);
+
 
 
 const currentTab = ref('Applicant');
@@ -56,12 +224,6 @@ const resetTab = () => {
 const openImageModal = (imageUrl) => {
     modalImage.value = imageUrl;
     showModal.value = true;
-};
-
-
-const handleDialogClose = () => {
-    open.value = false;
-    resetTab();
 };
 
 const isShowPreview = ref(false)
@@ -512,6 +674,869 @@ onMounted(() => {
                                         </div>
                                     </div>
 
+                                    <!-- Data Check Tab -->
+                                        <div v-if="currentTab === 'Data Check'">
+                                          <div class="flex items-center justify-between">
+                                            <SectionHeader
+                                              title="Data Check"
+                                              description="Generate and view DataCheck report for this applicant."
+                                            />
+
+                                            <button
+                                              class="px-4 py-2 bg-[#75ba2c] text-white font-medium rounded shadow hover:bg-[#75ba2c] focus:outline-none"
+                                              @click="getDataCheckReport"
+                                            >
+                                              Get DataCheck Report
+                                            </button>
+                                          </div>
+
+                                          <div v-if="showDataCheckReport" class="mt-4">
+                                            <div class="datacheck-report" style="margin: 0; background-color: #ffffff; padding: 10px;">
+                                              <!-- PAGE 1 -->
+                                              <div class="main-page">
+                                                <div style="padding: 20px 5px 0; margin: 0 0 10px;">
+                                                  <table style="width: 100%;">
+                                                    <tr>
+                                                      <td style="vertical-align: middle;">
+                                                        <h1 style="font-size: 17px; line-height: 17px; text-transform: uppercase; margin:0 0 35px; color: #000;">
+                                                          CONFIDENTIAL
+                                                        </h1>
+                                                        <h2 style="font-size: 13px; line-height: 20px;">
+                                                          Individual Credit Report (Sample Report)
+                                                          <span style="margin: 0 0 0 20px;">Strong Match</span>
+                                                        </h2>
+                                                      </td>
+
+                                                      <td align="right" style="vertical-align: middle;">
+                                                        <div style="display: inline-block; width: 130px; text-align: center;">
+                                                          <img src="/logo-credit.jpg" alt="logo" style="max-width: 45px; margin: 0 0 15px;" />
+                                                          <span style="display: block; font-size: 15px; font-weight: 700; line-height: 18px;">DataCheck</span>
+                                                          <span style="display: block; font-size: 12px; font-weight: 500; line-height: 13px;">MicroFinance Bureau</span>
+                                                        </div>
+                                                      </td>
+                                                    </tr>
+                                                  </table>
+                                                </div>
+
+                                                <div style="padding: 0 5px 0;">
+                                                  <table style="width: 100%;">
+                                                    <tr>
+                                                      <td style="border-top: #000 solid 1px; border-bottom: #000 solid 1px; padding: 5px 0;">
+                                                        <table style="width: 100%">
+                                                          <tr>
+                                                            <td><strong>File#:</strong></td>
+                                                            <td>{{ dataCheckDummy.individual_detail.FILE_NO }}</td>
+                                                            <td><strong>Creation Date:</strong></td>
+                                                            <td>{{ dataCheckDummy.individual_detail.CREATION_DATE }}</td>
+                                                            <td><strong>Name:</strong></td>
+                                                            <td>
+                                                              {{ dataCheckDummy.individual_detail.FIRST_NAME }}
+                                                              {{ dataCheckDummy.individual_detail.MIDDLE_NAME }}
+                                                              {{ dataCheckDummy.individual_detail.LAST_NAME }}
+                                                            </td>
+                                                            <td><strong>CNIC#:</strong></td>
+                                                            <td>{{ dataCheckDummy.individual_detail.CNIC }}</td>
+                                                          </tr>
+
+                                                          <tr>
+                                                            <td><strong>Tranx#:</strong></td>
+                                                            <td>{{ dataCheckDummy.individual_detail.TRANX_NO }}</td>
+                                                            <td><strong>Tranx Date:</strong></td>
+                                                            <td>{{ dataCheckDummy.individual_detail.TRANX_DATE }}</td>
+                                                            <td><strong>NIC#:</strong></td>
+                                                            <td>{{ dataCheckDummy.individual_detail.NIC }}</td>
+                                                            <td><strong>Gender:</strong></td>
+                                                            <td>{{ dataCheckDummy.individual_detail.GENDER }}</td>
+                                                          </tr>
+
+                                                          <tr>
+                                                            <td><strong>Maker:</strong></td>
+                                                            <td>{{ dataCheckDummy.individual_detail.MAKER }}</td>
+                                                            <td><strong>Checker:</strong></td>
+                                                            <td>{{ dataCheckDummy.individual_detail.CHECKER }}</td>
+                                                            <td><strong>DOB:</strong></td>
+                                                            <td>{{ dataCheckDummy.individual_detail.DOB }}</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                          </tr>
+                                                        </table>
+                                                      </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                      <td style="border-top: #000 solid 1px; border-bottom: #000 solid 1px; padding: 5px 0;">
+                                                        <table style="width: 100%">
+                                                          <tr>
+                                                            <td style="width: 140px;"><strong>RELATIONS</strong></td>
+                                                            <td><strong>NAME</strong></td>
+                                                            <td></td><td></td><td></td><td></td><td></td><td></td>
+                                                          </tr>
+                                                          <tr>
+                                                            <td style="width: 140px;"><strong>Father/Husband:</strong></td>
+                                                            <td>
+                                                              {{ dataCheckDummy.individual_detail.FATHER_HUSBAND_FNAME }}
+                                                              {{ dataCheckDummy.individual_detail.FATHER_HUSBAND_MNAME }}
+                                                              {{ dataCheckDummy.individual_detail.FATHER_HUSBAND_LNAME }}
+                                                            </td>
+                                                            <td></td><td></td><td></td><td></td><td></td><td></td>
+                                                          </tr>
+                                                        </table>
+                                                      </td>
+                                                    </tr>
+                                                  </table>
+                                                </div>
+
+                                                <!-- Home + Employer Info (was Blade @foreach) -->
+                                                <template v-for="(home, idx) in dataCheckDummy.individual_detail.homeInformation" :key="idx">
+                                                  <div style="border: #000 solid 1px; margin: 0 5px 0 5px; padding: 0 5px;">
+                                                    <table style="width: 100%;">
+                                                      <tr>
+                                                        <td>
+                                                          <table style="width: 100%; margin: 5px 0 10px;">
+                                                            <tr>
+                                                              <td>
+                                                                <strong style="font-size: 11px;">{{ String(home.SEQ_NO).toUpperCase() }} ADDRESS INFORMATION</strong>
+                                                              </td>
+                                                              <td align="right">
+                                                                <strong style="font-size: 11px;">Reported On: {{ home.REPORTED_ON }}</strong>
+                                                              </td>
+                                                            </tr>
+                                                          </table>
+                                                        </td>
+                                                      </tr>
+
+                                                      <tr>
+                                                        <td>
+                                                          <table style="width: 100%">
+                                                            <tr>
+                                                              <td><strong>Residential Address:</strong></td>
+                                                              <td>{{ home.ADDRESS }}, {{ home.CITY }}</td>
+                                                              <td></td><td></td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td><strong>Village:</strong></td>
+                                                              <td>---</td>
+                                                              <td><strong>Chak:</strong></td>
+                                                              <td>---</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td><strong>Tehsil/Town:</strong></td>
+                                                              <td>---</td>
+                                                              <td><strong>U.C.:</strong></td>
+                                                              <td>---</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td><strong>Electricity Consumer #:</strong></td>
+                                                              <td>---</td>
+                                                              <td><strong>Phone#:</strong></td>
+                                                              <td>{{ home.PHONE1 }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td><strong>Gas Consumer#:</strong></td>
+                                                              <td>---</td>
+                                                              <td><strong>Cell#:</strong></td>
+                                                              <td>{{ home.PHONE2 }}</td>
+                                                            </tr>
+                                                          </table>
+                                                        </td>
+                                                      </tr>
+
+                                                      <tr>
+                                                        <td style="border-top: #000 solid 1px;">
+                                                          <table style="width: 100%; margin: 5px 0 0;">
+                                                            <tr>
+                                                              <td></td>
+                                                              <td align="right">
+                                                                <strong style="font-size: 11px;">Reported On: {{ home.employerInformationF.REPORTED_ON }}</strong>
+                                                              </td>
+                                                            </tr>
+                                                          </table>
+                                                        </td>
+                                                      </tr>
+
+                                                      <tr>
+                                                        <td style="border-bottom: #000 solid 1px; padding: 5px 0;">
+                                                          <table style="width: 100%">
+                                                            <tr>
+                                                              <td><strong>Company Name:</strong></td>
+                                                              <td>{{ home.employerInformationF.EMPLOYER }}</td>
+                                                              <td></td><td></td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td><strong>Ownership Status:</strong></td>
+                                                              <td>---</td>
+                                                              <td><strong>Business Category:</strong></td>
+                                                              <td>---</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td><strong>Address:</strong></td>
+                                                              <td>{{ home.employerInformationF.ADDRESS }}, {{ home.employerInformationF.CITY }}</td>
+                                                              <td></td><td></td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td><strong>Village:</strong></td>
+                                                              <td>---</td>
+                                                              <td><strong>Chak:</strong></td>
+                                                              <td>---</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td><strong>Tehsil/Town:</strong></td>
+                                                              <td>---</td>
+                                                              <td><strong>U.C.:</strong></td>
+                                                              <td>---</td>
+                                                            </tr>
+                                                            <tr>
+                                                              <td><strong>Phone#:</strong></td>
+                                                              <td>{{ home.employerInformationF.PHONE1 }}</td>
+                                                              <td><strong>Cell#:</strong></td>
+                                                              <td>{{ home.employerInformationF.PHONE2 }}</td>
+                                                            </tr>
+                                                          </table>
+                                                        </td>
+                                                      </tr>
+                                                    </table>
+                                                  </div>
+                                                </template>
+
+                                                <div style="padding: 10px 5px 0;">
+                                                  <h2 style="font-size: 13px; margin-bottom: 10px; line-height: 20px;">Credit Score:</h2>
+                                                  <div>
+                                                    <table class="inner-table">
+                                                      <tr>
+                                                        <td style="font-size: 13px; line-height: 20px; font-weight: 600; border: #000 solid 1px;">
+                                                          Scoring Service not Availed
+                                                        </td>
+                                                      </tr>
+                                                    </table>
+                                                  </div>
+
+                                                  <h2 style="font-size: 13px; margin-bottom: 10px; line-height: 20px;">Default History:</h2>
+                                                  <div>
+                                                    <table class="inner-table">
+                                                      <tr>
+                                                        <th>Member</th>
+                                                        <th>Branch</th>
+                                                        <th>Date</th>
+                                                        <th>Account#</th>
+                                                        <th>Amount</th>
+                                                        <th>TY</th>
+                                                        <th>ST</th>
+                                                        <th>RR</th>
+                                                        <th>AC</th>
+                                                        <th>Group Id</th>
+                                                      </tr>
+
+                                                      <tr v-for="(d, i) in dataCheckDummy.individual_detail.dataCheckDefaults" :key="i">
+                                                        <td>** {{ d.MEM_NAME }} <br /> * {{ d.MEM_NAME }}</td>
+                                                        <td>{{ d.SUBBRN_NAME }} <br /> {{ d.SUBBRN_NAME }}</td>
+                                                        <td>{{ d.UPD_STATUS_DATE }} <br /> {{ d.ORG_STATUS_DATE }}</td>
+                                                        <td>{{ d.UPD_ACCT_NO }} <br /> {{ d.ORG_ACCT_NO }}</td>
+                                                        <td>{{ d.UPD_AMOUNT }} <br /> {{ d.ORG_AMOUNT }}</td>
+                                                        <td>{{ d.UPD_ACCT_TY }} <br /> {{ d.ORG_ACCT_TY }}</td>
+                                                        <td>{{ d.UPD_STATUS }} <br /> {{ d.ORG_STATUS }}</td>
+                                                        <td>{{ d.UPD_RTR }} <br /> {{ d.ORG_RTR }}</td>
+                                                        <td>{{ d.ASSOC_TY }}</td>
+                                                        <td>{{ d.GROUP_ID }}</td>
+                                                      </tr>
+                                                    </table>
+
+                                                    <div style="text-align: center; font-size: 13px; margin-bottom: 10px; line-height: 20px; font-weight: 600;">
+                                                      ** Latest Record, * Original Record
+                                                    </div>
+                                                  </div>
+
+                                                  <h2 style="font-size: 13px; margin-bottom: 10px; line-height: 20px;">File Notes:</h2>
+                                                  <div>
+                                                    <table class="inner-table">
+                                                      <tr>
+                                                        <th>Ref. Date</th>
+                                                        <th>Account#</th>
+                                                        <th>Comments</th>
+                                                      </tr>
+                                                      <tr>
+                                                        <td colspan="3" style="text-align:center;">(No notes in dummy data)</td>
+                                                      </tr>
+                                                    </table>
+                                                  </div>
+                                                </div>
+                                              </div>
+
+                                              <!-- PAGE 2 -->
+                                              <div class="main-page">
+                                                <div style="padding: 10px 5px 0;">
+                                                  <h2 style="font-size: 13px; margin-bottom: 10px; line-height: 20px;">CCP:</h2>
+
+                                                  <div v-for="(m, i) in dataCheckDummy.individual_detail.dataCheckCcpMaster" :key="i">
+                                                    <table class="inner-table">
+                                                      <tr>
+                                                        <th>Member, Branch</th>
+                                                        <th>Account#</th>
+                                                        <th>Term,TY, ST</th>
+                                                        <th>Amount Disbursed</th>
+                                                        <th>Open Date</th>
+                                                        <th>Maturity Date</th>
+                                                        <th>AC</th>
+                                                        <th>Status Date</th>
+                                                        <th>Last Payment</th>
+                                                        <th>Overdue Amount</th>
+                                                        <th>Outstanding Balance</th>
+                                                        <th>Payment Status</th>
+                                                      </tr>
+
+                                                      <tr>
+                                                        <td>{{ m.MEM_NAME }}<span v-if="m.SUBBRN_NAME">, <br /></span>{{ m.SUBBRN_NAME }}</td>
+                                                        <td>{{ m.ACCT_NO }}</td>
+                                                        <td>{{ m.TERM }}, {{ m.ACCT_TY }}, {{ m.ACCT_STATUS }}</td>
+                                                        <td>{{ m.MASTER_LIMIT }}</td>
+                                                        <td>{{ m.OPEN_DATE }}</td>
+                                                        <td>{{ m.MATURITY_DATE }}</td>
+                                                        <td>PRN</td>
+                                                        <td>{{ m.STATUS_DATE }}</td>
+                                                        <td>{{ m.LAST_PAYMENT }}</td>
+                                                        <td>{{ m.OVERDUEAMOUNT }}</td>
+                                                        <td>{{ m.BALANCE }}</td>
+                                                        <td>{{ m.PAYMENT_STATUS }}</td>
+                                                      </tr>
+
+                                                      <tr>
+                                                        <td v-for="(d, k) in m.ccpDetails" :key="k">
+                                                          {{ d.STATUS_MONTH.slice(0, -4) }}/{{ d.STATUS_MONTH.slice(-4) }}
+                                                        </td>
+                                                      </tr>
+
+                                                      <tr>
+                                                        <td v-for="(d, k) in m.ccpDetails" :key="k">
+                                                          {{ d.PAYMENT_STATUS }}
+                                                        </td>
+                                                      </tr>
+                                                    </table>
+                                                  </div>
+
+                                                  <h2 style="font-size: 13px; margin-bottom: 10px; line-height: 20px;">Delinquency Summary (12 Months):</h2>
+                                                  <div>
+                                                    <table class="inner-table">
+                                                      <tr>
+                                                        <th>Member, Branch</th>
+                                                        <th>A/C Type</th>
+                                                        <th>Amount Disbursed</th>
+                                                        <th>A/C Status</th>
+                                                        <th>OK</th>
+                                                        <th>X</th>
+                                                        <th>30+</th>
+                                                        <th>60+</th>
+                                                        <th>90+</th>
+                                                        <th>120+</th>
+                                                        <th>150+</th>
+                                                        <th>180+</th>
+                                                      </tr>
+
+                                                      <tr v-for="(m, i) in dataCheckDummy.individual_detail.dataCheckCcpMaster" :key="i">
+                                                        <td>{{ m.MEM_NAME }}<span v-if="m.SUBBRN_NAME">, <br /></span>{{ m.SUBBRN_NAME }}</td>
+                                                        <td>{{ m.ACCT_TY }}</td>
+                                                        <td>{{ m.MASTER_LIMIT }}</td>
+                                                        <td>{{ m.ACCT_STATUS }}</td>
+                                                        <td>{{ m.ccpSummary.OK }}</td>
+                                                        <td>{{ m.ccpSummary.X }}</td>
+                                                        <td>{{ m.ccpSummary.P30 }}</td>
+                                                        <td>{{ m.ccpSummary.P60 }}</td>
+                                                        <td>{{ m.ccpSummary.P90 }}</td>
+                                                        <td>{{ m.ccpSummary.P120 }}</td>
+                                                        <td>{{ m.ccpSummary.P150 }}</td>
+                                                        <td>{{ m.ccpSummary.P180 }}</td>
+                                                      </tr>
+
+                                                      <tr>
+                                                        <td colspan="4" align="right" style="font-size: 13px; line-height: 13px; font-weight: 600;">Total</td>
+                                                        <td>{{ dataCheckDummy.individual_detail.dataCheckCcpSummaryTotal.OK }}</td>
+                                                        <td>{{ dataCheckDummy.individual_detail.dataCheckCcpSummaryTotal.X }}</td>
+                                                        <td>{{ dataCheckDummy.individual_detail.dataCheckCcpSummaryTotal.P30 }}</td>
+                                                        <td>{{ dataCheckDummy.individual_detail.dataCheckCcpSummaryTotal.P60 }}</td>
+                                                        <td>{{ dataCheckDummy.individual_detail.dataCheckCcpSummaryTotal.P90 }}</td>
+                                                        <td>{{ dataCheckDummy.individual_detail.dataCheckCcpSummaryTotal.P120 }}</td>
+                                                        <td>{{ dataCheckDummy.individual_detail.dataCheckCcpSummaryTotal.P150 }}</td>
+                                                        <td>{{ dataCheckDummy.individual_detail.dataCheckCcpSummaryTotal.P180 }}</td>
+                                                      </tr>
+                                                    </table>
+                                                  </div>
+
+                                                  <h2 style="font-size: 13px; margin-bottom: 10px; line-height: 20px;">Credit Apps:</h2>
+                                                  <div>
+                                                    <table class="inner-table">
+                                                      <tr>
+                                                        <th>Member</th>
+                                                        <th>Branch</th>
+                                                        <th>Application Date</th>
+                                                        <th>Application Id</th>
+                                                        <th>Amount</th>
+                                                        <th>TY</th>
+                                                        <th>AC</th>
+                                                        <th>Group Id</th>
+                                                      </tr>
+                                                      <tr v-for="(e, i) in dataCheckDummy.individual_detail.dataCheckEnquiries" :key="i">
+                                                        <td>{{ e.MEM_NAME }}</td>
+                                                        <td>{{ e.SUBBRN_NAME }}</td>
+                                                        <td>{{ e.REFERENCE_DATE }}</td>
+                                                        <td>{{ e.REFERENCE_NO }}</td>
+                                                        <td>{{ e.AMOUNT }}</td>
+                                                        <td>{{ e.ACCT_TY }}</td>
+                                                        <td>{{ e.ASSOC_TY }}</td>
+                                                        <td>-</td>
+                                                      </tr>
+                                                    </table>
+                                                  </div>
+
+                                                  <h2 style="font-size: 13px; margin-bottom: 10px; line-height: 20px;">Credit Review:</h2>
+                                                  <div>
+                                                    <table class="inner-table">
+                                                      <tr>
+                                                        <th>Member</th>
+                                                        <th>Reviews</th>
+                                                      </tr>
+
+                                                      <tr v-for="(r, i) in dataCheckDummy.individual_detail.dataCheckReview" :key="i">
+                                                        <td>{{ r.MEMBER }}</td>
+                                                        <td>{{ r.REVIEWS }}</td>
+                                                      </tr>
+
+                                                      <tr>
+                                                        <td>Total</td>
+                                                        <td>{{ dataCheckDummy.individual_detail.dataCheckReview.reduce((sum, r) => sum + Number(r.REVIEWS || 0), 0) }}</td>
+                                                      </tr>
+                                                    </table>
+                                                  </div>
+
+                                                  <div style="text-align: center;">
+                                                    <table>
+                                                      <tr>
+                                                        <td>
+                                                          <p style="font-weight: 600">
+                                                            TY : Account Type , ST : Account Status , RR : Reason to Report , AC : Association Code
+                                                            The information provided is only for the purpose of evaluation of the customer and whatever is contained herein is data supplied by members.
+                                                            <br />
+                                                            *** END OF CREDIT REPORT ***
+                                                          </p>
+                                                        </td>
+                                                      </tr>
+                                                    </table>
+                                                  </div>
+
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+
+                                          <div v-else class="mt-4 border rounded-lg p-4 bg-gray-50 shadow">
+                                            <p class="text-sm text-gray-500">
+                                              Click “Get DataCheck Report” to render the report layout.
+                                            </p>
+                                          </div>
+                                        </div>
+
+
+                                    <!-- Tasdeeq Tab -->
+                                    <div v-if="currentTab === 'Tasdeeq'">
+                                      <div class="flex items-center justify-between">
+                                        <SectionHeader
+                                          title="Tasdeeq"
+                                          description="Generate and view Tasdeeq report for this applicant."
+                                        />
+
+                                        <div class="flex items-center gap-2">
+                                          <button
+                                            class="px-4 py-2 bg-[#75ba2c] text-white font-medium rounded shadow hover:bg-[#75ba2c] focus:outline-none"
+                                            @click="getTasdeeqReport"
+                                          >
+                                            Get Tasdeeq Report
+                                          </button>
+
+                                          <!-- optional print (enable later if you want) -->
+                                          <!--
+                                          <button
+                                            v-if="showTasdeeqReport"
+                                            class="px-4 py-2 bg-slate-900 text-white font-medium rounded shadow hover:bg-slate-800 focus:outline-none"
+                                            @click="window.print()"
+                                          >
+                                            Print
+                                          </button>
+                                          -->
+                                        </div>
+                                      </div>
+
+                                      <!-- Report -->
+                                      <div v-if="showTasdeeqReport" class="mt-4">
+                                        <!-- Keep report styles scoped to this block -->
+
+                                        <!-- IMPORTANT:
+                                          We keep original layout, just remove blade variables and replace with Vue bindings.
+                                          Images: use a local asset path you already have in public, e.g. /images/logo.jpg
+                                        -->
+                                        <div class="tasdeeq-report" style="margin: 0; background-color: #e6e6e6; padding: 10px;">
+
+                                          <!-- PAGE 1 -->
+                                          <div class="main-page">
+                                            <div style="padding: 20px 5px 10px; margin: 0 0 10px; border-bottom: #dedede solid 2px;">
+                                              <table style="width: 100%;">
+                                                <tr>
+                                                  <td style="vertical-align: middle;">
+                                                    <img src="/Tasdeeq_Logo_1.png" alt="logo" style="max-width: 115px; margin: 0;" />
+                                                  </td>
+                                                  <td align="center" style="vertical-align: middle;">
+                                                    <h1 style="font-size: 13px; line-height: 15px; text-transform: uppercase; margin:0; color: #000;">
+                                                      CONSUMER CREDIT INFORMATION REPORT
+                                                    </h1>
+                                                  </td>
+                                                  <td align="right" style="vertical-align: middle;">
+                                                    <div style="display: inline-block; text-align: right;">
+                                                      <span style="display: block; font-size: 13px; font-weight: 700; line-height: 15px;">CONFIDENTIAL</span>
+                                                      <span style="display: block; font-size: 12px; font-weight: 500; line-height: 13px;">
+                                                        Date Time: {{ tasdeeqDummy.other_details.reportDate }} {{ tasdeeqDummy.other_details.reportTime }}
+                                                      </span>
+                                                      <span style="display: block; font-size: 12px; font-weight: 500; line-height: 13px;">
+                                                        Report Ref No: {{ tasdeeqDummy.other_details.refNo }}
+                                                      </span>
+                                                    </div>
+                                                  </td>
+                                                </tr>
+                                              </table>
+                                            </div>
+
+                                            <!-- Personal Information -->
+                                            <div style="padding: 0px; border: #dedede solid 2px; margin-bottom: 10px; border-radius: 2px;">
+                                              <table style="width: 100%;">
+                                                <tr>
+                                                  <td>
+                                                    <table style="width: 100%">
+                                                      <thead>
+                                                        <tr>
+                                                          <th align="left" colspan="6" style="background-color: #2e74b7; color: #fff; text-transform: uppercase; padding: 5px 10px;">
+                                                            Personel Information
+                                                          </th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                        <tr>
+                                                          <td style="padding: 0px 5px;"><strong>Name:</strong></td>
+                                                          <td colspan="3" style="padding: 0px 5px;">{{ tasdeeqDummy.personal.NAME }}</td>
+                                                          <td style="padding: 0px 5px;"><strong>Father/Husband Name:</strong></td>
+                                                          <td style="padding: 0px 5px;">{{ tasdeeqDummy.personal.FATHER_OR_HUSBAND_NAME }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                          <td style="padding: 0px 5px;"><strong>Gender:</strong></td>
+                                                          <td style="padding: 0px 5px;">{{ tasdeeqDummy.personal.GENDER }}</td>
+                                                          <td style="padding: 0px 5px;"><strong>CNIC:</strong></td>
+                                                          <td style="padding: 0px 5px;">{{ tasdeeqDummy.personal.CNIC }}</td>
+                                                          <td style="padding: 0px 5px;"><strong>Passport No:</strong></td>
+                                                          <td style="padding: 0px 5px;">{{ tasdeeqDummy.personal.PASSPORT }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                          <td style="padding: 0px 5px;"><strong>Date Of Birth :</strong></td>
+                                                          <td style="padding: 0px 5px;">{{ tasdeeqDummy.personal.DOB }}</td>
+                                                          <td style="padding: 0px 5px;"><strong>NIC:</strong></td>
+                                                          <td style="padding: 0px 5px;">{{ tasdeeqDummy.personal.NIC }}</td>
+                                                          <td style="padding: 0px 5px;"><strong>Business/Profession:</strong></td>
+                                                          <td style="padding: 0px 5px;">{{ tasdeeqDummy.personal.BUSINESS_OR_PROFESSION }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                          <td style="padding: 0px 5px;"><strong>Nationality:</strong></td>
+                                                          <td style="padding: 0px 5px;">{{ tasdeeqDummy.personal.NATIONALITY }}</td>
+                                                          <td style="padding: 0px 5px;"><strong>NTN:</strong></td>
+                                                          <td style="padding: 0px 5px;">{{ tasdeeqDummy.personal.NTN }}</td>
+                                                          <td style="padding: 0px 5px;"><strong>Borrower Type:</strong></td>
+                                                          <td style="padding: 0px 5px;">{{ tasdeeqDummy.personal.BORROWER_TYPE }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                          <td style="padding: 0px 5px;"><strong>Current Residential Address:</strong></td>
+                                                          <td colspan="6" style="padding: 0px 5px;">
+                                                            {{ tasdeeqDummy.personal.CURRENT_RESIDENTIAL_ADDRESS }}
+                                                            (As of : {{ tasdeeqDummy.personal.CURRENT_RESIDENTIAL_ADDRESS_DATE }})
+                                                          </td>
+                                                        </tr>
+                                                        <tr>
+                                                          <td style="padding: 0px 5px;"><strong>Present Address:</strong></td>
+                                                          <td colspan="6" style="padding: 0px 5px;">
+                                                            {{ tasdeeqDummy.personal.PERMANENT_ADDRESS }}
+                                                            (As of : {{ tasdeeqDummy.personal.PERMANENT_ADDRESS_DATE }})
+                                                          </td>
+                                                        </tr>
+                                                        <tr>
+                                                          <td style="padding: 0px 5px;"><strong>Previous Residential Address:</strong></td>
+                                                          <td colspan="6" style="padding: 0px 5px;">
+                                                            {{ tasdeeqDummy.personal.PREVIOUS_RESIDENTIAL_ADDRESS }}
+                                                            (As of : {{ tasdeeqDummy.personal.PREVIOUS_RESIDENTIAL_ADDRESS_DATE }})
+                                                          </td>
+                                                        </tr>
+                                                        <tr>
+                                                          <td style="padding: 0px 5px;"><strong>Employer/ Business:</strong></td>
+                                                          <td colspan="6" style="padding: 0px 5px;">
+                                                            {{ tasdeeqDummy.personal.EMPLOYER_OR_BUSINESS }}
+                                                            (As of : {{ tasdeeqDummy.personal.EMPLOYER_OR_BUSINESS_DATE }})
+                                                          </td>
+                                                        </tr>
+                                                      </tbody>
+                                                    </table>
+                                                  </td>
+                                                </tr>
+                                              </table>
+                                            </div>
+
+                                            <!-- Summary -->
+                                            <div style="padding: 0px; border: #dedede solid 2px; border-radius: 2px; margin-bottom: 10px">
+                                              <table style="width: 100%;">
+                                                <tr>
+                                                  <td>
+                                                    <table style="width: 100%">
+                                                      <thead>
+                                                        <tr>
+                                                          <th align="left" colspan="6" style="background-color: #2e74b7; color: #fff; text-transform: uppercase; padding: 5px 10px;">
+                                                            SUMMARY OF INFORMATION CONTAINED IN THIS REPORT
+                                                          </th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                        <tr>
+                                                          <td align="center" style="padding: 10px 5px;">
+                                                            <div class="number-box">{{ tasdeeqDummy.other_details.noOfCreditEnquiry }}</div>
+                                                            <span>No. of Credit Enquiries (Last 12 Months)</span>
+                                                          </td>
+                                                          <td align="center" style="padding: 10px 5px;">
+                                                            <div class="number-box">{{ tasdeeqDummy.other_details.noOfActiveAccounts }}</div>
+                                                            <span>No. of Active Accounts</span>
+                                                          </td>
+                                                          <td align="center" style="padding: 10px 5px;">
+                                                            <div class="number-box">{{ tasdeeqDummy.other_details.totalOutstandingBalance }}</div>
+                                                            <span>Total Outstanding Balance</span>
+                                                          </td>
+                                                        </tr>
+                                                      </tbody>
+                                                    </table>
+                                                  </td>
+                                                </tr>
+                                              </table>
+                                            </div>
+
+                                            <!-- Overdue Summary last 24 months (static) -->
+                                            <div style="padding: 0px; border: #dedede solid 2px; border-radius: 2px; margin-bottom: 10px">
+                                              <table style="width: 100%;" class="content-bordered-tabler">
+                                                <tr>
+                                                  <td>
+                                                    <table style="width: 100%">
+                                                      <thead>
+                                                        <tr>
+                                                          <th align="left" colspan="8" style="background-color: #2e74b7; color: #fff; text-transform: uppercase; padding: 5px 10px;">
+                                                            OVERDUE SUMMARY OF LOANS FOR LAST 24 MONTHS
+                                                          </th>
+                                                        </tr>
+                                                        <tr>
+                                                          <th style="background-color: #8496b0; color: #fff;"> </th>
+                                                          <th style="background-color: #8496b0; color: #fff;">30+</th>
+                                                          <th style="background-color: #8496b0; color: #fff;">60+</th>
+                                                          <th style="background-color: #8496b0; color: #fff;">90+</th>
+                                                          <th style="background-color: #8496b0; color: #fff;">120+</th>
+                                                          <th style="background-color: #8496b0; color: #fff;">150+</th>
+                                                          <th style="background-color: #8496b0; color: #fff;">180+</th>
+                                                          <th style="background-color: #8496b0; color: #fff;">MFI Default</th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                        <tr>
+                                                          <td align="center" style="padding: 1px 5px;"><strong>No. of Times</strong></td>
+                                                          <td align="center" style="padding: 1px 5px;">1</td>
+                                                          <td align="center" style="padding: 1px 5px;">0</td>
+                                                          <td align="center" style="padding: 1px 5px;">0</td>
+                                                          <td align="center" style="padding: 1px 5px;">0</td>
+                                                          <td align="center" style="padding: 1px 5px;">0</td>
+                                                          <td align="center" style="padding: 1px 5px;">0</td>
+                                                          <td align="center" style="padding: 1px 5px;">0</td>
+                                                        </tr>
+                                                      </tbody>
+                                                    </table>
+                                                  </td>
+                                                </tr>
+                                              </table>
+                                            </div>
+
+                                            <!-- Status of credit applications (static sample) -->
+                                            <div style="padding: 0px; border: #dedede solid 2px; border-radius: 2px; margin-bottom: 10px">
+                                              <table style="width: 100%;" class="content-bordered-tabler">
+                                                <tr>
+                                                  <td>
+                                                    <table style="width: 100%">
+                                                      <thead>
+                                                        <tr>
+                                                          <th align="left" colspan="5" style="background-color: #2e74b7; color: #fff; text-transform: uppercase; padding: 5px 10px;">
+                                                            DETAILS OF STATUS OF CREDIT APPLICATIONS FOR LAST 24 MONTHS
+                                                          </th>
+                                                        </tr>
+                                                        <tr>
+                                                          <th style="background-color: #8496b0; color: #fff;">Product</th>
+                                                          <th style="background-color: #8496b0; color: #fff;">Financial Institution</th>
+                                                          <th style="background-color: #8496b0; color: #fff;">Date of Application</th>
+                                                          <th style="background-color: #8496b0; color: #fff;">Amount of Facility</th>
+                                                          <th style="background-color: #8496b0; color: #fff;">Status</th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                        <tr>
+                                                          <td align="center" style="padding: 1px 5px;">Personal Loan</td>
+                                                          <td align="center" style="padding: 1px 5px;">Dummy Bank</td>
+                                                          <td align="center" style="padding: 1px 5px;">01/08/2025</td>
+                                                          <td align="center" style="padding: 1px 5px;">PKR 50,000</td>
+                                                          <td align="center" style="padding: 1px 5px;">Approved</td>
+                                                        </tr>
+                                                      </tbody>
+                                                    </table>
+                                                  </td>
+                                                </tr>
+                                              </table>
+                                            </div>
+
+                                            <!-- Settlement of loans (static sample) -->
+                                            <div style="padding: 0px; border: #dedede solid 2px; border-radius: 2px; margin-bottom: 10px">
+                                              <table style="width: 100%;" class="content-bordered-tabler">
+                                                <tr>
+                                                  <td>
+                                                    <table style="width: 100%">
+                                                      <thead>
+                                                        <tr>
+                                                          <th align="left" colspan="6" style="background-color: #2e74b7; color: #fff; text-transform: uppercase; padding: 5px 10px;">
+                                                            DETAILS OF SETTLEMENT OF LOANS FOR LAST FIVE YEARS
+                                                          </th>
+                                                        </tr>
+                                                        <tr>
+                                                          <th style="background-color: #8496b0; color: #fff;">Product</th>
+                                                          <th style="background-color: #8496b0; color: #fff;">Total Limit</th>
+                                                          <th style="background-color: #8496b0; color: #fff;">Approval Date</th>
+                                                          <th style="background-color: #8496b0; color: #fff;">Relationship Date</th>
+                                                          <th style="background-color: #8496b0; color: #fff;">Maturity Date</th>
+                                                          <th style="background-color: #8496b0; color: #fff;">Date of Settlement</th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                        <tr>
+                                                          <td align="center" style="padding: 1px 5px;">Auto Loan</td>
+                                                          <td align="center" style="padding: 1px 5px;">PKR 200,000</td>
+                                                          <td align="center" style="padding: 1px 5px;">01/01/2022</td>
+                                                          <td align="center" style="padding: 1px 5px;">01/02/2022</td>
+                                                          <td align="center" style="padding: 1px 5px;">01/01/2024</td>
+                                                          <td align="center" style="padding: 1px 5px;">01/01/2024</td>
+                                                        </tr>
+                                                      </tbody>
+                                                    </table>
+                                                  </td>
+                                                </tr>
+                                              </table>
+                                            </div>
+
+                                            <!-- Enquiries (static sample) -->
+                                            <div style="padding: 0px; border: #dedede solid 2px; border-radius: 2px; margin-bottom: 10px">
+                                              <table style="width: 100%;" class="content-bordered-tabler">
+                                                <tr>
+                                                  <td>
+                                                    <table style="width: 100%">
+                                                      <thead>
+                                                        <tr>
+                                                          <th align="left" colspan="5" style="background-color: #2e74b7; color: #fff; text-transform: uppercase; padding: 5px 10px;">
+                                                            DETAILS OF ENQUIRIES FOR LAST 24 MONTHS
+                                                          </th>
+                                                        </tr>
+                                                        <tr>
+                                                          <th style="background-color: #8496b0; color: #fff;">Sr.</th>
+                                                          <th style="background-color: #8496b0; color: #fff;">FI Type</th>
+                                                          <th style="background-color: #8496b0; color: #fff;">Date of Enquiry</th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                        <tr>
+                                                          <td align="center" style="padding: 1px 5px;">1</td>
+                                                          <td align="center" style="padding: 1px 5px;">FINCA Microfinance Bank Limited</td>
+                                                          <td align="center" style="padding: 1px 5px;">20/07/2025</td>
+                                                        </tr>
+                                                        <tr>
+                                                          <td align="center" style="padding: 1px 5px;">2</td>
+                                                          <td align="center" style="padding: 1px 5px;">Dummy Bank</td>
+                                                          <td align="center" style="padding: 1px 5px;">10/11/2025</td>
+                                                        </tr>
+                                                      </tbody>
+                                                    </table>
+                                                  </td>
+                                                </tr>
+                                              </table>
+                                            </div>
+                                          </div>
+
+                                          <!-- PAGE 2 (simplified static “end” page) -->
+                                          <div class="main-page">
+                                            <div style="padding: 20px 5px 10px; margin: 0 0 10px; border-bottom: #dedede solid 2px;">
+                                              <table style="width: 100%;">
+                                                <tr>
+                                                  <td style="vertical-align: middle;">
+                                                    <img src="/Tasdeeq_Logo_1.png" alt="logo" style="max-width: 115px; margin: 0;" />
+                                                  </td>
+                                                  <td align="center" style="vertical-align: middle;">
+                                                    <h1 style="font-size: 13px; line-height: 15px; text-transform: uppercase; margin:0; color: #000;">
+                                                      CONSUMER CREDIT INFORMATION REPORT
+                                                    </h1>
+                                                  </td>
+                                                  <td align="right" style="vertical-align: middle;">
+                                                    <div style="display: inline-block; text-align: right;">
+                                                      <span style="display: block; font-size: 13px; font-weight: 700; line-height: 15px;">CONFIDENTIAL</span>
+                                                      <span style="display: block; font-size: 12px; font-weight: 500; line-height: 13px;">
+                                                        Date Time: {{ tasdeeqDummy.other_details.reportDate }} {{ tasdeeqDummy.other_details.reportTime }}
+                                                      </span>
+                                                      <span style="display: block; font-size: 12px; font-weight: 500; line-height: 13px;">
+                                                        Report Ref No: {{ tasdeeqDummy.other_details.refNo }}
+                                                      </span>
+                                                    </div>
+                                                  </td>
+                                                </tr>
+                                              </table>
+                                            </div>
+
+                                            <div style="border: #dedede solid 2px; padding: 10px;">
+                                              <table>
+                                                <tr>
+                                                  <td width="55px"><strong>Remarks:</strong></td>
+                                                  <td>{{ tasdeeqDummy.other_details.Remarks }}</td>
+                                                </tr>
+                                              </table>
+                                            </div>
+
+                                            <div style="margin-top: 20px; color: #aba7a7;">
+                                              <table width="100%;">
+                                                <tr>
+                                                  <td width="55px">
+                                                    <strong style="width: 100%; display: block; text-align: center; border-bottom: #dedede solid 2px;">
+                                                      --END OF REPORT--
+                                                    </strong>
+                                                    <span style="color: #000;">
+                                                      Please see below the terms/abbreviations used in this report and their definitions:
+                                                    </span>
+                                                    <br />
+                                                    <span style="color: #000;">
+                                                      *Fields and values displayed as blank or with a single asterisk (*) are those for which no data has been reported by any Financial Institution
+                                                    </span>
+                                                    <br />
+                                                    <span style="color: #000;">
+                                                      **The information contained in this report is dummy for now. Later you will replace it with API response.
+                                                    </span>
+                                                  </td>
+                                                </tr>
+                                              </table>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      <!-- Empty State -->
+                                      <div v-else class="mt-4 border rounded-lg p-4 bg-gray-50 shadow">
+                                        <p class="text-sm text-gray-500">
+                                          Click “Get Tasdeeq Report” to render the report layout.
+                                        </p>
+                                      </div>
+                                    </div>
+
+
+
                                     <!-- OFAC NACTA Tab -->
                                     <div v-if="currentTab === 'Ofac Nacta'">
                                         <div class="flex items-center justify-between">
@@ -636,3 +1661,170 @@ onMounted(() => {
         </TransitionRoot>
     </div>
 </template>
+
+
+<style scoped>
+/* Tasdeeq report styles only */
+.tasdeeq-report * {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.tasdeeq-report td {
+  vertical-align: top;
+}
+
+.tasdeeq-report {
+  font-size: 9px;
+  line-height: 16px;
+  padding: 0;
+  font-family: verdana;
+}
+
+.tasdeeq-report .urdu {
+  font-size: 7px;
+  line-height: 22px;
+  font-weight: 500;
+}
+
+.tasdeeq-report .main-page {
+  width: 210mm;
+  margin: 0 auto;
+  position: relative;
+  background-color: #fff;
+  margin-bottom: 10px;
+  padding: 20px;
+}
+
+.tasdeeq-report .inner-table {
+  width: 100%;
+  text-align: center;
+  border-left: #000 solid 1px;
+  border-right: #000 solid 1px;
+  margin: 10px 0;
+}
+
+.tasdeeq-report .inner-table th {
+  color: #000;
+  border-top: #000 solid 1px;
+  border-left: #000 solid 1px;
+  border-bottom: #000 solid 1px;
+  padding: 5px;
+  font-size: 9px;
+  line-height: 13px;
+}
+
+.tasdeeq-report .inner-table th:first-child {
+  border-left: none;
+}
+
+.tasdeeq-report .inner-table td {
+  font-size: 8px;
+  line-height: 13px;
+  border-left: #000 solid 1px;
+  border-bottom: #000 solid 1px;
+  padding: 5px;
+}
+
+.tasdeeq-report .inner-table td:first-child {
+  border-left: none;
+}
+
+.tasdeeq-report .number-box {
+  max-width: 150px;
+  margin: 0 auto;
+  background-color: #d0cece;
+  color: #000;
+  font-weight: 700;
+  font-size: 18px;
+  text-align: center;
+  padding: 10px 0;
+  margin-bottom: 5px;
+}
+
+.tasdeeq-report .content-bordered-tabler td {
+  border-right: #aaa8ab solid 1px;
+  border-top: #aaa8ab solid 1px;
+}
+
+.tasdeeq-report .content-bordered-tabler td:last-child {
+  border-right: none;
+}
+
+/* DataCheck report styles (scoped via wrapper class) */
+.datacheck-report * {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.datacheck-report td {
+  vertical-align: top;
+}
+
+.datacheck-report {
+  font-size: 9px;
+  line-height: 16px;
+  padding: 0;
+  font-family: verdana;
+}
+
+.datacheck-report .urdu {
+  font-size: 7px;
+  line-height: 22px;
+  font-weight: 500;
+}
+
+.datacheck-report .main-page {
+  width: 210mm;
+  margin: 0 auto;
+  border: #000 solid 3px;
+  background: #fff;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+
+.datacheck-report .inner-table {
+  width: 100%;
+  text-align: center;
+  border-left: #000 solid 1px;
+  border-right: #000 solid 1px;
+  margin: 10px 0;
+}
+
+.datacheck-report .inner-table th {
+  color: #000;
+  border-top: #000 solid 1px;
+  border-left: #000 solid 1px;
+  border-bottom: #000 solid 1px;
+  padding: 5px;
+  font-size: 9px;
+  line-height: 13px;
+}
+
+.datacheck-report .inner-table th:first-child {
+  border-left: none;
+}
+
+.datacheck-report .inner-table td {
+  font-size: 8px;
+  line-height: 13px;
+  border-left: #000 solid 1px;
+  border-bottom: #000 solid 1px;
+  padding: 5px;
+}
+
+.datacheck-report .inner-table td:first-child {
+  border-left: none;
+}
+
+.datacheck-report .btn {
+  background: #e0e0e0 none repeat scroll 0 0;
+  border: none;
+  border-radius: 3px;
+  margin: 20px 0 0;
+  padding: 6px 21px;
+  cursor: pointer;
+}
+
+</style>
+
