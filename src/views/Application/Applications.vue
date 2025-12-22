@@ -30,10 +30,8 @@ const router = useRouter();
 const columns = [
     { Header: 'Id', accessor: 'id' },
     { Header: 'Applicant', accessor: 'Applicant', slotName: "Applicant" },
-    { Header: 'Shipper', accessor: 'Applicant', slotName: "shipperName" },
+    { Header: 'Consumer Number', accessor: 'Applicant', slotName: "consumerNumber" },
     { Header: 'Product', accessor: 'product', slotName: "productName" },
-    { Header: 'Order Number', accessor: 'order_number', },
-    { Header: 'Order Amount', accessor: 'order_amount', },
     { Header: 'Financing Amount', accessor: 'loan_amount' },
     { Header: 'Charges', accessor: 'charges', slotName: "charges" },
     { Header: 'Total Charges', accessor: 'total_charges', },
@@ -317,9 +315,9 @@ onMounted(() => {
                     </span>
                 </template>
 
-                <template #shipperName="{ value }">
+                <template #consumerNumber="{ value }">
                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                        {{ value.applicant.shipper_name }}
+                        {{ value.consumer_number }}
                     </dd>
                 </template>
 
@@ -550,12 +548,6 @@ onMounted(() => {
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                                    <dt class="text-sm/6 font-medium text-gray-900">Shipper ID</dt>
-                                                    <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.applicant.shipper_id }}
-                                                    </dd>
-                                                </div>
-                                                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                                                     <dt class="text-sm/6 font-medium text-gray-900">Address</dt>
                                                     <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
                                                         {{ selectedRowData.applicant.address }}
@@ -709,22 +701,6 @@ onMounted(() => {
                                                         {{ selectedRowData.applicant.first_name }}
                                                         {{ ' ' }}
                                                         {{ selectedRowData.applicant.last_name }}
-                                                    </dd>
-                                                </div>
-                                                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                                    <dt class="text-sm/6 font-medium text-gray-900">
-                                                        Order Number
-                                                    </dt>
-                                                    <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.order_number }}
-                                                    </dd>
-                                                </div>
-                                                <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                                                    <dt class="text-sm/6 font-medium text-gray-900">
-                                                        Order Amount
-                                                    </dt>
-                                                    <dd class="mt-1 text-sm/6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                                        {{ selectedRowData.order_amount }}
                                                     </dd>
                                                 </div>
                                                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
