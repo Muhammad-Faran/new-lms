@@ -1,179 +1,247 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue'
-import axios from 'axios'
-import API from '../utils/baseApi';
-import { formatCurrency } from '../utils/constrants';
-import Combobox from '../components/Combobox.vue';
-import Flatpickr from 'vue-flatpickr-component';
-import 'flatpickr/dist/flatpickr.css';
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 
-const stats = ref([
-  { name: 'Total Disbursed Amount', stat: 'PKR 0' },
-  { name: 'Total AUM (Loans in disbursed state)', stat: 'PKR 0' },
-  { name: 'Total Shippers', stat: '0' },
-  { name: 'Total Active Shippers (3 Months Active)', stat: '0' },
-  { name: 'Order Count', stat: '0' },
-  { name: 'Total Revenue', stat: 'PKR 0' },
-  { name: 'Delinquent Orders Count', stat: '0' },
-  { name: 'Total Active Shippers (3 Months Active)', stat: '0' },
-]);
+// Chart.js
+import {
+  Chart,
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Tooltip,
+  Filler,
+  Legend,
+} from 'chart.js'
 
-const selectedShipper = ref(null); // Selected item from Combobox
-const selectedProduct = ref(null); // Selected item from Combobox
-const shipperData = ref([]);
-const productData = ref([]);
-const fromDate = ref(null);
-const toDate = ref(null);
-const loading = ref(false)
+Chart.register(
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Tooltip,
+  Filler,
+  Legend
+)
 
-const fetchProductsData = async () => {
-  try {
-    const response = await axios.get(API.PRODUCTS);
+/**
+ * =========================
+ * Chart State
+ * =========================
+ */
+const chartRef = ref(null)
+let chartInstance = null
 
-    const {
-      data
-    } = response.data
+// Dummy 12-month data (API-ready)
+const months = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+]
 
-    productData.value = [...data]
+const loanApplications = [
+  45, 60, 52, 78, 90, 110,
+  95, 120, 130, 150, 170, 190
+]
 
-  } catch (error) {
-    console.error('Error exporting applications:', error.response || error.message);
+const buildChart = () => {
+  if (!chartRef.value) return
+
+  if (chartInstance) {
+    chartInstance.destroy()
   }
-};
 
-const fetchShipperNamesData = async () => {
-  try {
-    const response = await axios.get(API.APPLICANTS_SHIPPER_NAME);
-
-    const {
-      shipper_names
-    } = response.data
-
-    shipperData.value = [...shipper_names.map((item, index) => ({ id: index + 1, name: item }))]
-
-  } catch (error) {
-    console.error('Error exporting applications:', error.response || error.message);
-  }
-};
-
-const exportDashboardStats = async () => {
-  try {
-    loading.value = true
-
-    const params = {
-      from_date: fromDate.value,
-      to_date: toDate.value,
-      shipper_name: selectedShipper.value?.name,
-      product_id: selectedProduct.value?.id,
-    };
-
-    const response = await axios.get(API.DASHBOARD_STATS, { params });
-
-    const {
-      total_disbursed_amount,
-      total_aum,
-      total_shippers,
-      total_active_shippers,
-      order_count,
-      total_revenue,
-      delinquent_orders_count,
-      volume_of_delinquent_loans
-    } = response.data
-
-    stats.value = [
-      { name: 'Total Disbursed Amount', stat: `PKR ${formatCurrency(parseFloat(total_disbursed_amount || 0))}` },
-      { name: 'Total AUM (Loans in disbursed state)', stat: `PKR ${formatCurrency(parseFloat(total_aum || 0))}` },
-      { name: 'Total Shippers', stat: total_shippers || 0 },
-      { name: 'Total Active Shippers (3 Months Active)', stat: total_active_shippers || 0 },
-      { name: 'Order Count', stat: order_count || 0 },
-      { name: 'Total Revenue', stat: `PKR ${formatCurrency(parseFloat(total_revenue || 0))}` },
-      { name: 'Delinquent Orders Count', stat: delinquent_orders_count || 0 },
-      { name: 'Volume Of Delinquent Loans', stat: `PKR ${formatCurrency(parseFloat(volume_of_delinquent_loans || 0))}` },
-    ];
-
-  } catch (error) {
-    console.error('Error exporting applications:', error.response || error.message);
-  } finally {
-    loading.value = false
-  }
-};
-
-
-
-const resetFilters = () => {
-  fromDate.value = null;
-  toDate.value = null;
-  selectedShipper.value = null
-  selectedProduct.value = null
-};
-
-watch([fromDate, toDate, selectedShipper, selectedProduct], () => {
-  if (fromDate.value && toDate.value) {
-    if (new Date(toDate.value) >= new Date(fromDate.value)) {
-      exportDashboardStats();
-    } else {
-      alert('Error: "To Date" cannot be earlier than "From Date".');
-    }
-  } else if (!fromDate.value && !toDate.value) {
-    // Allow calling API if either product or shipper is selected without dates
-    if (selectedShipper.value || selectedProduct.value) {
-      exportDashboardStats();
-    } else {
-      // If all filters reset, call API to reset stats
-      exportDashboardStats();
-    }
-  }
-});
+  chartInstance = new Chart(chartRef.value, {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        {
+          label: 'Loan Applications',
+          data: loanApplications,
+          borderColor: '#34d399', // emerald-400
+          backgroundColor: 'rgba(52, 211, 153, 0.15)',
+          fill: true,
+          tension: 0.4,
+          borderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          pointBackgroundColor: '#34d399',
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: {
+            color: '#e5e7eb',
+            font: { size: 12 },
+          },
+        },
+        tooltip: {
+          backgroundColor: '#020617',
+          titleColor: '#ffffff',
+          bodyColor: '#e5e7eb',
+          borderColor: '#334155',
+          borderWidth: 1,
+          padding: 10,
+        },
+      },
+      scales: {
+        x: {
+          ticks: { color: '#94a3b8' },
+          grid: { display: false },
+        },
+        y: {
+          ticks: { color: '#94a3b8' },
+          grid: {
+            color: 'rgba(148, 163, 184, 0.15)',
+          },
+        },
+      },
+    },
+  })
+}
 
 onMounted(() => {
-  exportDashboardStats()
-  fetchProductsData()
-  fetchShipperNamesData()
+  buildChart()
 })
+
+onBeforeUnmount(() => {
+  if (chartInstance) {
+    chartInstance.destroy()
+  }
+})
+
+/**
+ * =========================
+ * Stats (Dummy for now)
+ * Replace later from API
+ * =========================
+ */
+const stats = ref([
+  {
+    title: 'Total Applications',
+    value: '1,360',
+    sub: 'All time',
+    badge: '+8% MoM',
+  },
+  {
+    title: 'Total Disbursed Amount',
+    value: 'PKR 54.2M',
+    sub: 'All time',
+    badge: '+3.2% MoM',
+  },
+  {
+    title: 'Total AUM (Disbursed Loans)',
+    value: 'PKR 19.6M',
+    sub: 'Currently active',
+    badge: 'Stable',
+  },
+  {
+    title: 'Total Applicants',
+    value: '4,820',
+    sub: 'Unique applicants',
+    badge: '+120 this month',
+  },
+  {
+    title: 'Active Applicants (3 Months)',
+    value: '1,145',
+    sub: 'Last 90 days',
+    badge: '+4.6% MoM',
+  },
+])
+
+const glowMap = [
+  'shadow-emerald-500/15',
+  'shadow-cyan-500/10',
+  'shadow-indigo-500/10',
+  'shadow-emerald-500/10',
+  'shadow-cyan-500/10',
+]
 </script>
 
 <template>
-  <div class="px-6 py-2 min-h-screen">
-    <div class="container mx-auto">
-      <!-- Dashboard Title -->
-      <h1 class="text-4xl font-extrabold text-black mb-4">Dashboard</h1>
+  <div class="px-6 py-6">
+    <!-- Page Header -->
+    <div class="mb-6">
+      <h1 class="text-3xl font-bold text-slate-900">Dashboard</h1>
+      <p class="text-sm text-slate-500">
+        Overview of loan activity (dummy data for now)
+      </p>
+    </div>
 
-      <!-- Filters Section -->
+    <!-- =========================
+         Stats (Top)
+    ========================== -->
+    <div class="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
       <div
-        class="hidden grid grid-cols-1 md:grid-cols-5 gap-4 items-center bg-white p-4 rounded-xl shadow-lg mb-4 z-10 relative">
-        <!-- Reset Button -->
-        <button @click="resetFilters"
-          class="flex items-center justify-center rounded-full bg-red-200 hover:bg-red-300 text-red-700 h-10 w-10 mx-auto md:mx-0"
-          aria-label="Reset Filters">
-          <i class="fas fa-times"></i>
-        </button>
+        v-for="(s, idx) in stats"
+        :key="s.title"
+        class="group relative overflow-hidden rounded-2xl border border-slate-800/70 bg-gradient-to-br from-slate-950 via-slate-900 to-black p-5 shadow-xl shadow-black/40 transition-transform duration-200 hover:-translate-y-0.5"
+        :class="glowMap[idx]">
 
-        <!-- From Date Picker -->
-        <Flatpickr v-model="fromDate" :options="{ dateFormat: 'Y-m-d' }" placeholder="From Date"
-          class="w-full rounded-lg border-gray-300 py-2 px-4 shadow-sm focus:ring-indigo-500" />
+        <!-- Accent strip -->
+        <div
+          class="absolute inset-y-4 left-0 w-[3px] rounded-full bg-emerald-400/80 group-hover:bg-emerald-300 transition-colors"></div>
 
-        <!-- To Date Picker -->
-        <Flatpickr v-model="toDate" :options="{ dateFormat: 'Y-m-d' }" placeholder="To Date"
-          class="w-full rounded-lg border-gray-300 py-2 px-4 shadow-sm focus:ring-indigo-500" />
+        <!-- Soft glow blob -->
+        <div
+          class="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-emerald-500/10 blur-2xl"></div>
 
-        <!-- Shipper Selection -->
-        <Combobox v-model="selectedShipper" :options="shipperData" placeholder="Select Shipper"
-          class="w-full rounded-lg" option-label="name" :truncate-options="false" />
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+              {{ s.title }}
+            </p>
+            <p class="mt-2 text-2xl font-semibold text-white">
+              {{ s.value }}
+            </p>
+            <p class="mt-1 text-xs text-slate-400">
+              {{ s.sub }}
+            </p>
+          </div>
 
-        <!-- Product Selection -->
-        <Combobox v-model="selectedProduct" :options="productData" placeholder="Choose Product" class="rounded-lg"
-          option-label="name" :truncate-options="false" />
+          <span
+            class="shrink-0 rounded-full border border-slate-700/70 bg-slate-900/60 px-2.5 py-1 text-[11px] font-semibold text-slate-200">
+            {{ s.badge }}
+          </span>
+        </div>
+
+        <!-- Bottom micro line -->
+        <div class="mt-4 h-[2px] w-full rounded-full bg-slate-800/70">
+          <div class="h-[2px] w-2/3 rounded-full bg-emerald-400/60"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================
+         Chart Card
+    ========================== -->
+    <div
+      class="rounded-2xl border border-slate-800/70 bg-gradient-to-br from-slate-950 via-slate-900 to-black p-6 shadow-2xl shadow-black/40">
+
+      <div class="mb-4 flex items-center justify-between gap-4">
+        <div>
+          <h2 class="text-lg font-semibold text-white">
+            Loan Applications – Last 12 Months
+          </h2>
+          <p class="text-xs text-slate-400">
+            Monthly application count
+          </p>
+        </div>
+
+        <span
+          class="inline-flex items-center gap-2 rounded-full border border-slate-700/70 bg-slate-900/60 px-3 py-1 text-xs text-slate-300">
+          <span class="size-2 rounded-full bg-emerald-400"></span>
+          Applications
+        </span>
       </div>
 
-      <!-- Statistics Cards -->
-      <div v-loading="loading" class="relative hidden">
-        <dl class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div v-for="item in stats" :key="item.name"
-            class="bg-[#cdf1a6] p-4 rounded-xl shadow-md hover:shadow-lg transition-transform transform hover:scale-105 duration-300">
-            <dt class="text-md font-semibold text-gray-700 whitespace-normal break-words">{{ item.name }}</dt>
-            <dd class="mt-2 text-2xl font-bold text-gray-900">{{ item.stat }}</dd>
-          </div>
-        </dl>
+      <div class="h-[320px]">
+        <canvas ref="chartRef"></canvas>
       </div>
     </div>
   </div>
